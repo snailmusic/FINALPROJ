@@ -12,6 +12,6 @@
     "vite": "^2.9.5"
   },
   "dependencies": {
-    "gl-matrix": "^3.4.3"
+    "gl-matrix-ts": "^2.3.3"
   }
 }
