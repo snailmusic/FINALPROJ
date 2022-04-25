@@ -3,12 +3,9 @@ import { mat4 } from "gl-matrix-ts";
 
 import Canvas from "./WebGL/Canvas";
 import Shader from "./WebGL/Shader";
-import { Rectangle } from "./WebGL/Shapes";
-import { Colors } from "./WebGL/Types";
+// import Player from "./Player";
 
-const app = document.querySelector<HTMLDivElement>("#app");
 const canv = new Canvas(640, 480);
-let testRect: Rectangle | null = null;
 
 const projMat = mat4.create();
 mat4.ortho(projMat, 0, canv.c.width, canv.c.height, 0, 0.0, 2);
@@ -21,26 +18,21 @@ interface Shaders {
 const shaders: Shaders = {
   basic: null,
 };
-app?.appendChild(canv.c);
+document?.body.appendChild(canv.c);
 
 function init() {
   console.log("hello!");
-  Shader.Load("assets/Basic.shader")
+  Shader.Load("assets/Textured.shader")
     .then((val) => {
       shaders.basic = new Shader(canv);
       shaders.basic.initShaderProgram(val.vert, val.frag);
       shaders.basic.addAttribLoc("vertexPosition", "aVertexPosition");
+      shaders.basic.addAttribLoc("texPosition", "aTextureCoord");
       shaders.basic.addUniformLoc("uViewMatrix");
       shaders.basic.addUniformLoc("uModelMatrix");
       shaders.basic.addUniformLoc("uProjectionMatrix");
       shaders.basic.addUniformLoc("color","uColor");
-      testRect = new Rectangle(
-        { x: 10, y: 10 },
-        { x: 100, y: 100 },
-        canv,
-        Colors.red,
-        shaders.basic
-      );
+      shaders.basic.addUniformLoc("sampler", "uSampler");
       const { gl } = canv;
       gl?.enable(gl?.BLEND);
       gl?.blendFunc(gl?.SRC_ALPHA, gl?.ONE_MINUS_SRC_ALPHA);
@@ -67,7 +59,7 @@ function draw() {
   gl?.clear(gl?.COLOR_BUFFER_BIT | gl?.DEPTH_BUFFER_BIT);
 
   const modelMat = mat4.create();
-  mat4.translate(modelMat, modelMat, [0,0,0])
+  mat4.translate(modelMat, modelMat, [mousePos.x,mousePos.y,0])
 
   shaders.basic?.bind();
   gl?.uniform4fv(
@@ -79,7 +71,7 @@ function draw() {
   gl?.uniformMatrix4fv(progInfo?.uniformLocations.uModelMatrix, false, modelMat);
   gl?.uniform4f(progInfo?.uniformLocations.color, 1,1,1,1);
 
-  testRect?.draw();
+  testTure?.draw();
 }
 
 window.onload = init;
