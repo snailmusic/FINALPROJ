@@ -27,20 +27,23 @@ class Rectangle implements Shape{
 		this.canvas = canvas;
 		this.color = color;
 		this.shader = shader;
+		console.log(shader);
+		
+		
 		let positions = [
 			0 + pos.x, 0 + pos.y,
-			1 * size.x + pos.x, 0 + pos.y,
-			0 + pos.x, 1 * size.y + pos.y,
-			1 * size.x + pos.x, 1 * size.y + pos.y
+			size.x + pos.x, 0 + pos.y,
+			0 + pos.x, size.y + pos.y,
+			size.x + pos.x, size.y + pos.y
 		]
 		let idx = [
 			0, 1, 2,
 			3, 1, 2
 		]
 		let {gl:ctx} = canvas;
-		let type = ctx.STATIC_DRAW;
+		let type = ctx?.STATIC_DRAW;
 		if (dynamic) {
-			type = ctx.DYNAMIC_DRAW;
+			type = ctx?.DYNAMIC_DRAW;
 		}
 		this.ib = new IndexBuffer(idx, ctx, type);
 		this.vb = new VertexBuffer(positions, ctx, type);
@@ -50,16 +53,16 @@ class Rectangle implements Shape{
 		const {programInfo} = this.shader;
 		let {gl:ctx} = this.canvas;
 		this.shader.bind();
-		ctx.uniform4f(programInfo?.uniformLocations.color, this.color.r, this.color.g, this.color.b, this.color.a);
+		ctx?.uniform4f(programInfo?.uniformLocations.color, this.color.r, this.color.g, this.color.b, this.color.a);
 		this.ib.bind();
 		this.vb.bind();
 
 		const numComponents = 2;
-		const type = ctx.FLOAT;
+		const type = ctx?.FLOAT;
 		const normalize = false;
 		const stride = 0;
 		const offset = 0;
-		ctx.vertexAttribPointer(
+		ctx?.vertexAttribPointer(
 			programInfo?.attribLocations.vertexPosition,
 			numComponents,
 			type,
@@ -67,8 +70,8 @@ class Rectangle implements Shape{
 			stride,
 			offset,
 		);
-		ctx.enableVertexAttribArray(programInfo?.attribLocations.vertexPosition);
-		ctx.drawElements(ctx.TRIANGLES, 6, ctx.UNSIGNED_BYTE, 0)
+		ctx?.enableVertexAttribArray(programInfo?.attribLocations.vertexPosition);
+		ctx?.drawElements(ctx?.TRIANGLES, 6, ctx?.UNSIGNED_BYTE, 0)
 	}
 }
 
@@ -95,9 +98,9 @@ class Triangle implements Shape {
 		let idx = [
 			0, 1, 2
 		]
-		let type = ctx.STATIC_DRAW;
+		let type = ctx?.STATIC_DRAW;
 		if (dynamic) {
-			type = ctx.DYNAMIC_DRAW;
+			type = ctx?.DYNAMIC_DRAW;
 		}
 		this.ib = new IndexBuffer(idx, ctx, type);
 		this.vb = new VertexBuffer(positions, ctx, type);
@@ -106,16 +109,16 @@ class Triangle implements Shape {
 		const {programInfo} = this.shader;
 		let {gl:ctx} = this.canvas;
 		this.shader.bind();
-		ctx.uniform4f(programInfo?.uniformLocations.color, this.color.r, this.color.g, this.color.b, this.color.a);
+		ctx?.uniform4f(programInfo?.uniformLocations.color, this.color.r, this.color.g, this.color.b, this.color.a);
 		this.ib.bind();
 		this.vb.bind();
 
 		const numComponents = 2;
-		const type = ctx.FLOAT;
+		const type = ctx?.FLOAT;
 		const normalize = false;
 		const stride = 0;
 		const offset = 0;
-		ctx.vertexAttribPointer(
+		ctx?.vertexAttribPointer(
 			programInfo?.attribLocations.vertexPosition,
 			numComponents,
 			type,
@@ -123,8 +126,8 @@ class Triangle implements Shape {
 			stride,
 			offset,
 		);
-		ctx.enableVertexAttribArray(programInfo?.attribLocations.vertexPosition);
-		ctx.drawElements(ctx.TRIANGLES, 3, ctx.UNSIGNED_BYTE, 0)
+		ctx?.enableVertexAttribArray(programInfo?.attribLocations.vertexPosition);
+		ctx?.drawElements(ctx?.TRIANGLES, 3, ctx?.UNSIGNED_BYTE, 0)
 	}
 }
 
@@ -163,9 +166,9 @@ class TextureRect implements Shape{
 			0, 1, 2,
 			3, 1, 2
 		]
-		let type = ctx.STATIC_DRAW;
+		let type = ctx?.STATIC_DRAW;
 		if (dynamic) {
-			type = ctx.DYNAMIC_DRAW;
+			type = ctx?.DYNAMIC_DRAW;
 		}
 		this.ib = new IndexBuffer(idx, ctx, type);
 		this.vb = new VertexBuffer(positions, ctx, type);
@@ -180,11 +183,11 @@ class TextureRect implements Shape{
 		this.vb.bind();
 
 		const numComponents = 2;
-		const type = ctx.FLOAT;
+		const type = ctx?.FLOAT;
 		const normalize = false;
 		const stride = 16;
 		const offset = 0;
-		ctx.vertexAttribPointer(
+		ctx?.vertexAttribPointer(
 			programInfo?.attribLocations.vertexPosition,
 			numComponents,
 			type,
@@ -193,15 +196,15 @@ class TextureRect implements Shape{
 			offset,
 		);
 		
-		ctx.enableVertexAttribArray(programInfo?.attribLocations.vertexPosition);
+		ctx?.enableVertexAttribArray(programInfo?.attribLocations.vertexPosition);
 
-		ctx.vertexAttribPointer(
+		ctx?.vertexAttribPointer(
 			programInfo?.attribLocations.texPosition,
-			2, ctx.FLOAT, false, 16, 8
+			2, ctx?.FLOAT, false, 16, 8
 		);
-		ctx.enableVertexAttribArray(programInfo?.attribLocations.texPosition);
+		ctx?.enableVertexAttribArray(programInfo?.attribLocations.texPosition);
 
-		ctx.drawElements(ctx.TRIANGLES, 6, ctx.UNSIGNED_BYTE, 0)
+		ctx?.drawElements(ctx?.TRIANGLES, 6, ctx?.UNSIGNED_BYTE, 0)
 	}
 }
 

@@ -29,25 +29,26 @@ function init() {
     .then((val) => {
       shaders.basic = new Shader(canv);
       shaders.basic.initShaderProgram(val.vert, val.frag);
-      shaders.basic.addAttribLoc("aVertexPosition");
+      shaders.basic.addAttribLoc("vertexPosition", "aVertexPosition");
       shaders.basic.addUniformLoc("uViewMatrix");
-      shaders.basic.addUniformLoc("uModelMarix");
+      shaders.basic.addUniformLoc("uModelMatrix");
       shaders.basic.addUniformLoc("uProjectionMatrix");
-      shaders.basic.addUniformLoc("uColor");
+      shaders.basic.addUniformLoc("color","uColor");
       testRect = new Rectangle(
-        { x: 0, y: 0 },
+        { x: 10, y: 10 },
         { x: 100, y: 100 },
         canv,
         Colors.red,
         shaders.basic
       );
+      const { gl } = canv;
+      gl?.enable(gl?.BLEND);
+      gl?.blendFunc(gl?.SRC_ALPHA, gl?.ONE_MINUS_SRC_ALPHA);
+      window.requestAnimationFrame(update);
     })
     .catch((reason) => alert(`oopsie poopsie: ${reason}`));
 
-  const { gl } = canv;
-  gl?.enable(gl?.BLEND);
-  gl?.blendFunc(gl?.SRC_ALPHA, gl?.ONE_MINUS_SRC_ALPHA);
-  window.requestAnimationFrame(update);
+  
 }
 
 function update(_delta: DOMHighResTimeStamp) {
@@ -73,10 +74,10 @@ function draw() {
     progInfo?.uniformLocations.uViewMatrix,
     viewMat
   );
-  gl?.uniform4fv(progInfo?.uniformLocations.uViewMatrix, viewMat);
-  gl?.uniform4fv(progInfo?.uniformLocations.uProjMatrix, projMat);
-  gl?.uniform4fv(progInfo?.uniformLocations.uModelMatrix, modelMat);
-  gl?.uniform4f(progInfo?.uniformLocations.uColor, 1, 0, 1, 1);
+  gl?.uniformMatrix4fv(progInfo?.uniformLocations.uViewMatrix, false, viewMat);
+  gl?.uniformMatrix4fv(progInfo?.uniformLocations.uProjectionMatrix, false, projMat);
+  gl?.uniformMatrix4fv(progInfo?.uniformLocations.uModelMatrix, false, modelMat);
+  gl?.uniform4f(progInfo?.uniformLocations.color, 1,1,1,1);
 
   testRect?.draw();
 }
