@@ -18,8 +18,4 @@ class Collider {
   }
 }
 
-interface Collidable {
-  collider: Collider;
-}
-
-export { Collider, type Collidable };
+export { Collider };
