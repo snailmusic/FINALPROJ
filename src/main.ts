@@ -19,7 +19,6 @@ const shaders: Shaders = {
   basic: null,
 };
 
-let testBullet: Bullet | null;
 document?.body.appendChild(canv.c);
 
 function init() {
@@ -35,8 +34,6 @@ function init() {
       shaders.basic.addUniformLoc("uProjectionMatrix");
       shaders.basic.addUniformLoc("color", "uColor");
       shaders.basic.addUniformLoc("sampler", "uSampler");
-
-      testBullet = new Bullet({ x: 100, y: 100 }, canv, shaders.basic, Math.PI/2);
 
       const { gl } = canv;
       gl?.enable(gl?.BLEND);
@@ -72,10 +69,6 @@ function draw() {
     false,
     projMat
   );
-  if (testBullet != undefined){
-    testBullet.angle += 0.1;
-  }
-  testBullet?.draw();
 }
 
 window.onload = init;
