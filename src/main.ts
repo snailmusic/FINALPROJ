@@ -4,13 +4,12 @@ import { mat4 } from "gl-matrix-ts";
 import Canvas from "./WebGL/Canvas";
 import Shader from "./WebGL/Shader";
 // import Player from "./Player";
+import Collider from "./Collider";
 
 const canv = new Canvas(640, 480);
 
 const projMat = mat4.create();
 mat4.ortho(projMat, 0, canv.c.width, canv.c.height, 0, 0.0, 2);
-
-const viewMat = mat4.create();
 
 interface Shaders {
   basic: null | Shader;
@@ -31,7 +30,7 @@ function init() {
       shaders.basic.addUniformLoc("uViewMatrix");
       shaders.basic.addUniformLoc("uModelMatrix");
       shaders.basic.addUniformLoc("uProjectionMatrix");
-      shaders.basic.addUniformLoc("color","uColor");
+      shaders.basic.addUniformLoc("color", "uColor");
       shaders.basic.addUniformLoc("sampler", "uSampler");
       const { gl } = canv;
       gl?.enable(gl?.BLEND);
@@ -39,8 +38,6 @@ function init() {
       window.requestAnimationFrame(update);
     })
     .catch((reason) => alert(`oopsie poopsie: ${reason}`));
-
-  
 }
 
 function update(_delta: DOMHighResTimeStamp) {
@@ -51,27 +48,10 @@ function update(_delta: DOMHighResTimeStamp) {
 function draw() {
   const { gl } = canv;
 
-  const progInfo = shaders.basic?.programInfo;
-
   gl?.clearColor(0, 0, 0, 1.0); // Clear to black, fully opaque
   gl?.clearDepth(1.0); // Clear everything
 
   gl?.clear(gl?.COLOR_BUFFER_BIT | gl?.DEPTH_BUFFER_BIT);
-
-  const modelMat = mat4.create();
-  mat4.translate(modelMat, modelMat, [mousePos.x,mousePos.y,0])
-
-  shaders.basic?.bind();
-  gl?.uniform4fv(
-    progInfo?.uniformLocations.uViewMatrix,
-    viewMat
-  );
-  gl?.uniformMatrix4fv(progInfo?.uniformLocations.uViewMatrix, false, viewMat);
-  gl?.uniformMatrix4fv(progInfo?.uniformLocations.uProjectionMatrix, false, projMat);
-  gl?.uniformMatrix4fv(progInfo?.uniformLocations.uModelMatrix, false, modelMat);
-  gl?.uniform4f(progInfo?.uniformLocations.color, 1,1,1,1);
-
-  testTure?.draw();
 }
 
 window.onload = init;
