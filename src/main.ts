@@ -4,7 +4,7 @@ import { mat4 } from "gl-matrix-ts";
 import Canvas from "./WebGL/Canvas";
 import Shader from "./WebGL/Shader";
 // import Player from "./Player";
-import Bullet from "./Bullet";
+// import Bullet from "./Bullet";
 
 const canv = new Canvas(640, 480);
 

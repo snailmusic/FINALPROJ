@@ -1,6 +1,6 @@
 export default class Canvas {
   c: HTMLCanvasElement;
-  gl: WebGLRenderingContext | null;
+  gl: WebGLRenderingContext;
   constructor(width: number, height: number) {
     this.c = document.createElement("canvas");
     this.c.setAttribute("width", String(width));
@@ -8,8 +8,8 @@ export default class Canvas {
     this.c.addEventListener("contextmenu", (e) => {
       e.preventDefault();
     });
-    this.gl = this.c.getContext("webgl");
-    if (!this.gl) {
+    const temp = this.c.getContext("webgl");
+    if (!temp) {
       alert(
         "Unable to initialize WebGL. Your browser or machine may not support it."
       );
@@ -19,5 +19,7 @@ export default class Canvas {
 
       return;
     }
+    this.gl = temp;
+    
   }
 }

@@ -208,4 +208,4 @@ class TextureRect implements Shape{
 	}
 }
 
-export { Shape, Rectangle, Triangle, TextureRect };
+export { type Shape, Rectangle, Triangle, TextureRect };

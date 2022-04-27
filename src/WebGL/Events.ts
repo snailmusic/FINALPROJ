@@ -39,7 +39,7 @@ window.addEventListener("touchstart", (e)=>{
 	mousePos.y = maintouch.clientY;
 })
 
-window.addEventListener("touchend", (e)=>{
+window.addEventListener("touchend", (_)=>{
 	mouseButton[0] = false;
 })
 
