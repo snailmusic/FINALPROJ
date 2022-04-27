@@ -20,7 +20,7 @@ export default class Shader {
   programInfo: ProgramInfo;
   constructor(canvas: Canvas) {
     this.canvas = canvas;
-    this.programInfo = new ProgramInfo(new WebGLProgram());
+    this.programInfo = new ProgramInfo(0);
   }
 
   addUniformLoc(name: string, loc?: string) {
