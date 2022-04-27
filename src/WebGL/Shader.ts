@@ -18,9 +18,11 @@ class ProgramInfo {
 export default class Shader {
   canvas: Canvas;
   programInfo: ProgramInfo;
+  program: WebGLProgram
   constructor(canvas: Canvas) {
     this.canvas = canvas;
     this.programInfo = new ProgramInfo(0);
+    this.program = 0;
   }
 
   addUniformLoc(name: string, loc?: string) {
@@ -32,9 +34,7 @@ export default class Shader {
         this.canvas.gl.getUniformLocation(this.programInfo.program, loc);
     }
   }
-  program(_program: any, _loc: null): any {
-    throw new Error("Method not implemented.");
-  }
+
 
   addAttribLoc(name: string, loc?: string) {
     if (loc == null) {
@@ -84,7 +84,7 @@ export default class Shader {
       return null;
     }
 
-    // @ts-ignore
+    
     this.program = shaderProgram;
     this.programInfo = new ProgramInfo(this.program);
   }

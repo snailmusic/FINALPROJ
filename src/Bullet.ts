@@ -28,10 +28,11 @@ export default class Bullet extends GameObject {
   draw(): void {
     const { gl } = this.canvas;
     const programInfo = this.shader.programInfo;
-    const model = mat4.create();
-    const speed = 10;
+    const speed = 1;
     this.pos.x += Math.cos(this.angle) * speed;
     this.pos.y += Math.sin(this.angle) * speed;
+    const model = mat4.create();
+
     mat4.translate(model, model, [this.pos.x, this.pos.y, 0]);
     gl?.uniformMatrix4fv(
       programInfo?.uniformLocations.uModelMatrix,
