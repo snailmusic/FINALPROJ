@@ -4,7 +4,8 @@ import { mat4 } from "gl-matrix-ts";
 import Canvas from "./WebGL/Canvas";
 import Shader from "./WebGL/Shader";
 import { Enemy } from "./Enemy";
-import GameObject from "./GameObject";
+// import GameObject from "./GameObject";
+import {gameObjects} from "./Global"
 
 const canv = new Canvas(640, 480);
 
@@ -19,7 +20,6 @@ const shaders: Shaders = {
 	basic: null,
 };
 
-const gameObjects: GameObject[] = [];
 
 document?.body.appendChild(canv.c);
 
@@ -44,7 +44,7 @@ function init() {
 			gameObjects.push(
 				new Enemy(
 					{ x: 100, y: 100 },
-					0,
+					2,
 					canv,
 					shaders.basic,
 				),
@@ -86,7 +86,13 @@ function draw() {
     mat4.create()
   )
 	for (const obj of gameObjects) {
-		obj.draw();
+		if (obj.pos.x > canv.c.width || obj.pos.y > canv.c.height) {
+			// will add crap here later
+		}
+		else{
+			obj.draw();
+		}
+		// debugger;
 	}
 }
 

@@ -142,6 +142,8 @@ class TextureRect implements Shape{
 	ib: IndexBuffer;
 	texture: Texture;
 
+	static cache:{[key:string]:Texture} = {};
+
 	constructor(pos: Vec2, size: Vec2, canvas: Canvas,  texUrl: string, shader: Shader, dynamic:boolean = false) {
 		this.color = Colors.transparent;
 		this.position = pos;
@@ -149,7 +151,10 @@ class TextureRect implements Shape{
 		this.canvas = canvas;
 		let {gl:ctx} = canvas;
 		this.shader = shader;
-		this.texture = new Texture(texUrl, canvas, shader);
+		if (!TextureRect.cache[texUrl]) {
+			TextureRect.cache[texUrl] = new Texture(texUrl, canvas, shader);
+		}
+		this.texture = TextureRect.cache[texUrl];
 		let positions = [
 			0 + pos.x, 0 + pos.y, 0, 0,
 			size.x + pos.x, 0 + pos.y, 1, 0,

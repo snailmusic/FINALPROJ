@@ -5,7 +5,7 @@ import Canvas from "./WebGL/Canvas";
 import Shader from "./WebGL/Shader";
 import { TextureRect } from "./WebGL/Shapes";
 import { Vec2 } from "./WebGL/Types";
-import { curkeys } from "./WebGL/Events";
+import { gameObjects } from "./Global";
 
 enum PatternType {
 	Spiral,
@@ -42,18 +42,27 @@ class Enemy extends GameObject {
 		);
 		this.texture.draw();
 		// ++this.interval also returns the value while incrementing
-		if (++this.interval >= 100) {
-			this.bullets.push(new Bullet(this.pos, this.canvas, this.shader, 0));
+		
+		if (++this.interval >= 10) {
+			switch (this.type) {
+				case PatternType.Focused:
+					gameObjects.push(
+						new Bullet(
+							{ x:this.pos.x + 32, y:this.pos.y + 32},
+							this.canvas,
+							this.shader,
+							Math.PI / 2,
+						),
+					);
+					break;
+				
+				case PatternType.Radial:
+					this.bullets.push()
+
+				default:
+					break;
+			}
 			this.interval = 0;
-		}
-		if (curkeys[87]) {
-			this.pos.y -=2;
-		}
-		if (curkeys[83]) {
-			this.pos.y += 2;
-		}
-		for (const bullet of this.bullets) {
-			bullet.draw();
 		}
 	}
 }
