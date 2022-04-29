@@ -44,7 +44,7 @@ function init() {
 			gameObjects.push(
 				new Enemy(
 					{ x: 100, y: 100 },
-					2,
+					1,
 					canv,
 					shaders.basic,
 				),

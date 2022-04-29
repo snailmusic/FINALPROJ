@@ -5,7 +5,7 @@ import Canvas from "./WebGL/Canvas";
 import Shader from "./WebGL/Shader";
 import { TextureRect } from "./WebGL/Shapes";
 import { Vec2 } from "./WebGL/Types";
-import { gameObjects } from "./Global";
+import { gameObjects, range } from "./Global";
 
 enum PatternType {
 	Spiral,
@@ -20,6 +20,7 @@ class Enemy extends GameObject {
 	bullets: Bullet[];
 	texture: TextureRect
 	interval: number;
+	counter: number;
 	constructor(pos: Vec2, type: PatternType, canvas: Canvas, shader: Shader) {
 		super(pos, { x: 64, y: 64 });
 		this.type = type;
@@ -28,6 +29,7 @@ class Enemy extends GameObject {
 		this.bullets = [];
 		this.texture = new TextureRect({x:0, y:0}, this.size, canvas, "assets/test.png", shader);
 		this.interval = 0;
+		this.counter = 0;
 	}
 
 	draw(): void {
@@ -48,16 +50,59 @@ class Enemy extends GameObject {
 				case PatternType.Focused:
 					gameObjects.push(
 						new Bullet(
-							{ x:this.pos.x + 32, y:this.pos.y + 32},
+							{ x: this.pos.x + 32, y: this.pos.y + 32 },
 							this.canvas,
 							this.shader,
 							Math.PI / 2,
 						),
 					);
 					break;
-				
+
 				case PatternType.Radial:
-					this.bullets.push()
+					for (const i of range(0, 7)) {
+						const relPos: Vec2 = {
+							x: Math.sin((i * Math.PI) / 4) * 32,
+							y: Math.cos((i * Math.PI) / 4) * 32,
+						};
+						const centerPos = {
+							x: this.pos.x + 32,
+							y: this.pos.y + 32,
+						};
+						gameObjects.push(
+							new Bullet(
+								{
+									x: relPos.x + centerPos.x,
+									y: relPos.y + centerPos.y,
+								},
+								this.canvas,
+								this.shader,
+								(Math.PI / 4) * (-i + 2),
+							),
+						);
+					}
+					break;
+				case PatternType.Spiral:
+					for (const i of range(0, 7)) {
+						const relPos: Vec2 = {
+							x: Math.sin((i * Math.PI) / 4 + ++this.counter) * 32,
+							y: Math.cos((i * Math.PI) / 4 + ++this.counter) * 32,
+						};
+						const centerPos = {
+							x: this.pos.x + 32,
+							y: this.pos.y + 32,
+						};
+						gameObjects.push(
+							new Bullet(
+								{
+									x: relPos.x + centerPos.x,
+									y: relPos.y + centerPos.y,
+								},
+								this.canvas,
+								this.shader,
+								(Math.PI / 4) * (-i + 2) + ++this.counter,
+							),
+						);
+					}
 
 				default:
 					break;
