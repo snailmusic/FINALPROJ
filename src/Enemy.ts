@@ -81,6 +81,7 @@ class Enemy extends GameObject {
 						);
 					}
 					break;
+					
 				case PatternType.Spiral:
 					for (const i of range(0, 7)) {
 						const relPos: Vec2 = {
