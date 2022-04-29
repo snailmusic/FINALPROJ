@@ -86,14 +86,14 @@ function draw() {
     mat4.create()
   )
 	for (const obj of gameObjects) {
-		if (obj.pos.x > canv.c.width || obj.pos.y > canv.c.height) {
-			// will add crap here later
-		}
-		else{
 			obj.draw();
-		}
 		// debugger;
 	}
+
+	// need more advanced detection (maybe in the bullet thing)
+	gameObjects.filter((obj)=>{
+		return !(obj.pos.x > canv.c.width || obj.pos.y > canv.c.height);
+	})
 }
 
 window.onload = init;
