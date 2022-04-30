@@ -64,7 +64,7 @@ let prev = 0;
 function update(delta: DOMHighResTimeStamp) {
 	const fps = Math.round(1000/(delta - prev));
 	prev = delta;
-	fpsCounter.innerText = fps;
+	fpsCounter.innerText = fps.toString();
 	draw();
 	window.requestAnimationFrame(update);
 }
