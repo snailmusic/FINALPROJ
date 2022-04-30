@@ -20,8 +20,12 @@ const shaders: Shaders = {
 	basic: null,
 };
 
+const fpsCounter = document.createElement("p");
+fpsCounter.appendChild(document.createTextNode("0"));
+
 
 document?.body.appendChild(canv.c);
+document.body.appendChild(fpsCounter);
 
 function init() {
 	console.log("hello!");
@@ -44,7 +48,7 @@ function init() {
 			gameObjects.push(
 				new Enemy(
 					{ x: 100, y: 100 },
-					1,
+					0,
 					canv,
 					shaders.basic,
 				),
@@ -55,7 +59,12 @@ function init() {
 		.catch((reason) => alert(`oopsie poopsie: ${reason}`));
 }
 
-function update(_delta: DOMHighResTimeStamp) {
+let prev = 0;
+
+function update(delta: DOMHighResTimeStamp) {
+	const fps = Math.round(1000/(delta - prev));
+	prev = delta;
+	fpsCounter.innerText = fps;
 	draw();
 	window.requestAnimationFrame(update);
 }
@@ -86,14 +95,9 @@ function draw() {
     mat4.create()
   )
 	for (const obj of gameObjects) {
-			obj.draw();
+		obj.draw();
 		// debugger;
 	}
-
-	// need more advanced detection (maybe in the bullet thing)
-	gameObjects.filter((obj)=>{
-		return !(obj.pos.x > canv.c.width || obj.pos.y > canv.c.height);
-	})
 }
 
 window.onload = init;

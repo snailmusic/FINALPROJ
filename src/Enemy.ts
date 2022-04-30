@@ -83,10 +83,11 @@ class Enemy extends GameObject {
 					break;
 					
 				case PatternType.Spiral:
+					this.counter++;
 					for (const i of range(0, 7)) {
 						const relPos: Vec2 = {
-							x: Math.sin((i * Math.PI) / 4 + ++this.counter) * 32,
-							y: Math.cos((i * Math.PI) / 4 + ++this.counter) * 32,
+							x: Math.sin((i * Math.PI) / 4 - this.counter) * 32,
+							y: Math.cos((i * Math.PI) / 4 - this.counter) * 32,
 						};
 						const centerPos = {
 							x: this.pos.x + 32,
@@ -100,7 +101,7 @@ class Enemy extends GameObject {
 								},
 								this.canvas,
 								this.shader,
-								(Math.PI / 4) * (-i + 2) + ++this.counter,
+								(Math.PI / 4) * (-i + 2) + this.counter,
 							),
 						);
 					}
