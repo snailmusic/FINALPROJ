@@ -14,10 +14,12 @@ mat4.ortho(projMat, 0, canv.c.width, canv.c.height, 0, 0.0, 2);
 const viewMat = mat4.create();
 
 interface Shaders {
-	basic: null | Shader;
+	basic: Shader;
+	gradient: Shader;
 }
 const shaders: Shaders = {
-	basic: null,
+	basic: new Shader(canv),
+	gradient: new Shader(canv)
 };
 
 const fpsCounter = document.createElement("p");
@@ -31,7 +33,6 @@ function init() {
 	console.log("hello!");
 	Shader.Load("assets/Textured.shader")
 		.then((val) => {
-			shaders.basic = new Shader(canv);
 			shaders.basic.initShaderProgram(val.vert, val.frag);
 			shaders.basic.addAttribLoc("vertexPosition", "aVertexPosition");
 			shaders.basic.addAttribLoc("texPosition", "aTextureCoord");
@@ -41,20 +42,33 @@ function init() {
 			shaders.basic.addUniformLoc("color", "uColor");
 			shaders.basic.addUniformLoc("sampler", "uSampler");
 
-			const { gl } = canv;
-			gl?.enable(gl?.BLEND);
-			gl?.blendFunc(gl?.SRC_ALPHA, gl?.ONE_MINUS_SRC_ALPHA);
+			Shader.Load("assets/Gradient.shader").then((val) => {
+				shaders.gradient.initShaderProgram(val.vert, val.frag);
+				shaders.gradient.addAttribLoc("vertexPosition", "aVertexPosition");
+				shaders.gradient.addAttribLoc("texPosition", "aTextureCoord");
+				shaders.gradient.addUniformLoc("uViewMatrix");
+				shaders.gradient.addUniformLoc("uModelMatrix");
+				shaders.gradient.addUniformLoc("uProjectionMatrix");
+				shaders.gradient.addUniformLoc("start", "uStart");
+				shaders.gradient.addUniformLoc("end", "uEnd");
 
-			gameObjects.push(
-				new Enemy(
-					{ x: 100, y: 100 },
-					0,
-					canv,
-					shaders.basic,
-				),
-			);
+				const { gl } = canv;
+				gl?.enable(gl?.BLEND);
+				gl?.blendFunc(gl?.SRC_ALPHA, gl?.ONE_MINUS_SRC_ALPHA);
 
-			window.requestAnimationFrame(update);
+				gameObjects.push(
+					new Enemy(
+						{ x: 100, y: 100 },
+						0,
+						canv,
+						shaders.basic,
+					),
+				);
+
+				window.requestAnimationFrame(update);
+			})
+
+			
 		})
 		.catch((reason) => alert(`oopsie poopsie: ${reason}`));
 }
@@ -64,7 +78,7 @@ let prev = 0;
 function update(delta: DOMHighResTimeStamp) {
 	const fps = Math.round(1000/(delta - prev));
 	prev = delta;
-	fpsCounter.innerText = fps;
+	fpsCounter.innerText = fps.toString();
 	draw();
 	window.requestAnimationFrame(update);
 }
