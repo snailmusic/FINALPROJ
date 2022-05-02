@@ -62,8 +62,10 @@ class Enemy extends GameObject {
 		if (++this.interval >= 10) {
 			switch (this.type) {
 				case PatternType.Focused:
-					let angleToPlayer = Math.atan((player?.pos.y || 1) / (player?.pos.x || 1));
-					
+					let angleToPlayer = Math.atan(
+						(player?.pos.y || 1) / (player?.pos.x || 1),
+					);
+					// t_{2}=\pi\ -t_{1}*-1
 					gameObjects.push(
 						new Bullet(
 							{ x: this.pos.x + 32, y: this.pos.y + 32 },
@@ -97,7 +99,7 @@ class Enemy extends GameObject {
 						);
 					}
 					break;
-					
+
 				case PatternType.Spiral:
 					this.counter++;
 					for (const i of range(0, 7)) {
