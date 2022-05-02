@@ -5,7 +5,8 @@ import Canvas from "./WebGL/Canvas";
 import Shader from "./WebGL/Shader";
 import { Enemy } from "./Enemy";
 // import GameObject from "./GameObject";
-import {gameObjects} from "./Global"
+import { gameObjects, drawAll, setPlayer } from "./Global";
+import Player from "./Player";
 
 const canv = new Canvas(640, 480);
 
@@ -19,12 +20,11 @@ interface Shaders {
 }
 const shaders: Shaders = {
 	basic: new Shader(canv),
-	gradient: new Shader(canv)
+	gradient: new Shader(canv),
 };
 
 const fpsCounter = document.createElement("p");
 fpsCounter.appendChild(document.createTextNode("0"));
-
 
 document?.body.appendChild(canv.c);
 document.body.appendChild(fpsCounter);
@@ -42,33 +42,20 @@ function init() {
 			shaders.basic.addUniformLoc("color", "uColor");
 			shaders.basic.addUniformLoc("sampler", "uSampler");
 
-			Shader.Load("assets/Gradient.shader").then((val) => {
-				shaders.gradient.initShaderProgram(val.vert, val.frag);
-				shaders.gradient.addAttribLoc("vertexPosition", "aVertexPosition");
-				shaders.gradient.addAttribLoc("texPosition", "aTextureCoord");
-				shaders.gradient.addUniformLoc("uViewMatrix");
-				shaders.gradient.addUniformLoc("uModelMatrix");
-				shaders.gradient.addUniformLoc("uProjectionMatrix");
-				shaders.gradient.addUniformLoc("start", "uStart");
-				shaders.gradient.addUniformLoc("end", "uEnd");
+			const { gl } = canv;
+			gl?.enable(gl?.BLEND);
+			gl?.blendFunc(gl?.SRC_ALPHA, gl?.ONE_MINUS_SRC_ALPHA);
 
-				const { gl } = canv;
-				gl?.enable(gl?.BLEND);
-				gl?.blendFunc(gl?.SRC_ALPHA, gl?.ONE_MINUS_SRC_ALPHA);
+			gameObjects.push(
+				new Enemy({ x: 100, y: 100 }, 0, canv, shaders.basic),
+			);
+			const play = new Player({ x: 300, y: 300 }, shaders.basic, canv);
+			gameObjects.push(
+				play
+			);
+			setPlayer(play);
 
-				gameObjects.push(
-					new Enemy(
-						{ x: 100, y: 100 },
-						0,
-						canv,
-						shaders.basic,
-					),
-				);
-
-				window.requestAnimationFrame(update);
-			})
-
-			
+			window.requestAnimationFrame(update);
 		})
 		.catch((reason) => alert(`oopsie poopsie: ${reason}`));
 }
@@ -76,7 +63,7 @@ function init() {
 let prev = 0;
 
 function update(delta: DOMHighResTimeStamp) {
-	const fps = Math.round(1000/(delta - prev));
+	const fps = Math.round(1000 / (delta - prev));
 	prev = delta;
 	fpsCounter.innerText = fps.toString();
 	draw();
@@ -103,15 +90,12 @@ function draw() {
 		false,
 		projMat,
 	);
-  gl?.uniformMatrix4fv(
-    programInfo?.uniformLocations.uModelMatrix,
-    false,
-    mat4.create()
-  )
-	for (const obj of gameObjects) {
-		obj.draw();
-		// debugger;
-	}
+	gl?.uniformMatrix4fv(
+		programInfo?.uniformLocations.uModelMatrix,
+		false,
+		mat4.create(),
+	);
+	drawAll(canv);
 }
 
 window.onload = init;

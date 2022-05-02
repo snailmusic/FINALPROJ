@@ -5,7 +5,7 @@ import Canvas from "./WebGL/Canvas";
 import Shader from "./WebGL/Shader";
 import { TextureRect } from "./WebGL/Shapes";
 import { Vec2 } from "./WebGL/Types";
-import { gameObjects, range } from "./Global";
+import { gameObjects, player, range } from "./Global";
 
 enum PatternType {
 	Spiral,
@@ -21,6 +21,7 @@ class Enemy extends GameObject {
 	texture: TextureRect
 	interval: number;
 	counter: number;
+	lives: number;
 	constructor(pos: Vec2, type: PatternType, canvas: Canvas, shader: Shader) {
 		super(pos, { x: 64, y: 64 });
 		this.type = type;
@@ -30,6 +31,8 @@ class Enemy extends GameObject {
 		this.texture = new TextureRect({x:0, y:0}, this.size, canvas, "assets/test.png", shader);
 		this.interval = 0;
 		this.counter = 0;
+
+		this.lives = 10;
 	}
 
 	draw(): void {
@@ -44,10 +47,23 @@ class Enemy extends GameObject {
 		);
 		this.texture.draw();
 		// ++this.interval also returns the value while incrementing
-		
+		for (const obj of gameObjects) {
+			if (obj.constructor.name == "Bullet") {
+				if (
+					obj.collider.intersects(this.collider) &&
+					obj.owner == "player"
+				) {
+					console.log("enemy :flushed:");
+					this.lives--;
+					obj.toRemove = true;
+				}
+			}
+		}
 		if (++this.interval >= 10) {
 			switch (this.type) {
 				case PatternType.Focused:
+					let angleToPlayer = Math.atan((player?.pos.y || 1) / (player?.pos.x || 1));
+					
 					gameObjects.push(
 						new Bullet(
 							{ x: this.pos.x + 32, y: this.pos.y + 32 },

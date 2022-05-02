@@ -21,6 +21,6 @@ uniform mediump vec3 uStart;
 uniform mediump vec3 uEnd;
 
 void main() {
-    vec3 out = uEnd * vTextureCoord.y + uStart *  (1.0 - vTextureCoord.y);
-	gl_FragColor = vec4(out, 1.0);
+    mediump vec3 out = uEnd * vTextureCoord.y + uStart *  (1.0 - vTextureCoord.y);
+	gl_FragColor = vec4(out.x, out.y, out.z, 1.0);
 }
