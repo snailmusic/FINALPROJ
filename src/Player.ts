@@ -22,7 +22,7 @@ export default class Player extends GameObject {
 			{ x: 0, y: 0 },
 			{ x: 32, y: 32 },
 			canvas,
-			"assets/test.png",
+			"images/player.png",
 			shader,
 		);
 	}

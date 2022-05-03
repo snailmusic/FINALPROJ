@@ -22,17 +22,23 @@ class Enemy extends GameObject {
 	interval: number;
 	counter: number;
 	lives: number;
+	speed: number;
 	constructor(pos: Vec2, type: PatternType, canvas: Canvas, shader: Shader) {
 		super(pos, { x: 64, y: 64 });
 		this.type = type;
 		this.canvas = canvas;
 		this.shader = shader;
 		this.bullets = [];
-		this.texture = new TextureRect({x:0, y:0}, this.size, canvas, "assets/test.png", shader);
+		this.texture = new TextureRect({x:0, y:0}, this.size, canvas, "images/enemy.png", shader);
 		this.interval = 0;
 		this.counter = 0;
 
 		this.lives = 10;
+		this.speed = 20;
+
+		if (type == PatternType.Focused) {
+			this.speed = 10;
+		}
 	}
 
 	draw(): void {
@@ -59,19 +65,26 @@ class Enemy extends GameObject {
 				}
 			}
 		}
-		if (++this.interval >= 10) {
+		if (++this.interval >= this.speed) {
 			switch (this.type) {
 				case PatternType.Focused:
+					const relPos: Vec2 = {
+						x: (player?.pos.x || 0) - this.pos.x,
+						y: (player?.pos.y || 0) - this.pos.y
+					}
 					let angleToPlayer = Math.atan(
-						(player?.pos.y || 1) / (player?.pos.x || 1),
+						relPos.y / relPos.x,
 					);
-					// t_{2}=\pi\ -t_{1}*-1
+					// t2=\pi\ -t1*-1
+					if (relPos.x < 0) {
+						angleToPlayer += Math.PI;
+					}
 					gameObjects.push(
 						new Bullet(
 							{ x: this.pos.x + 32, y: this.pos.y + 32 },
 							this.canvas,
 							this.shader,
-							Math.PI / 2,
+							angleToPlayer,
 						),
 					);
 					break;

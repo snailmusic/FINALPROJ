@@ -47,7 +47,7 @@ function init() {
 			gl?.blendFunc(gl?.SRC_ALPHA, gl?.ONE_MINUS_SRC_ALPHA);
 
 			gameObjects.push(
-				new Enemy({ x: 100, y: 100 }, 0, canv, shaders.basic),
+				new Enemy({ x: 100, y: 100 }, 2, canv, shaders.basic),
 			);
 			const play = new Player({ x: 300, y: 300 }, shaders.basic, canv);
 			gameObjects.push(

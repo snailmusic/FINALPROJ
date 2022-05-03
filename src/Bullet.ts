@@ -13,7 +13,7 @@ export default class Bullet extends GameObject {
   owner: string;
   constructor(pos: Vec2, canvas: Canvas, shader: Shader, angle: number, owner?: string) {
     const size: Vec2 = { x: 16, y: 16 };
-    super(pos, size);
+    super({x:pos.x - 8, y:pos.y - 8}, size);
     this.canvas = canvas;
     this.shader = shader;
     this.texRect = new TextureRect(

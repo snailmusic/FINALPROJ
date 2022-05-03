@@ -3,8 +3,6 @@ import Shader from "./Shader";
 import { VertexBuffer, IndexBuffer } from "./Buffers";
 import Texture from "./Texture";
 import Canvas from "./Canvas";
-import { vec2type, vec3type } from "gl-matrix-ts/dist/common";
-import { vec3 } from "gl-matrix-ts";
 
 interface Shape{
 	position: Vec2;
@@ -215,76 +213,4 @@ class TextureRect implements Shape{
 	}
 }
 
-class GradientRect implements Shape{
-	position: Vec2;
-	size: Vec2;
-	canvas: Canvas;
-	color: Color;
-	shader: Shader;
-	vb: VertexBuffer;
-	ib: IndexBuffer;
-
-	static cache:{[key:string]:Texture} = {};
-
-	constructor(pos: Vec2, size: Vec2, canvas: Canvas, shader: Shader, start: vec3type, end: vec3type) {
-		this.color = Colors.transparent;
-		this.position = pos;
-		this.size = size;
-		this.canvas = canvas;
-		let {gl:ctx} = canvas;
-		this.shader = shader;
-		let positions = [
-			0 + pos.x, 0 + pos.y, 0, 0,
-			size.x + pos.x, 0 + pos.y, 1, 0,
-			0 + pos.x, size.y + pos.y, 0, 1,
-			size.x + pos.x, size.y + pos.y,	1, 1
-		]
-		// let positions = [
-		// 	0, 0,    0, 0,
-		// 	256, 0,  1, 0,
-		// 	0, 256,  0, 1,
-		// 	256,256, 1, 1
-		// ]
-		let idx = [
-			0, 1, 2,
-			3, 1, 2
-		]
-		let type = ctx?.STATIC_DRAW;
-		this.ib = new IndexBuffer(idx, ctx, type);
-		this.vb = new VertexBuffer(positions, ctx, type);
-	}
-
-	draw():void {
-		const {programInfo} = this.shader;
-		let {gl:ctx} = this.canvas;
-		this.shader.bind();
-		this.ib.bind();
-		this.vb.bind();
-
-		const numComponents = 2;
-		const type = ctx?.FLOAT;
-		const normalize = false;
-		const stride = 16;
-		const offset = 0;
-		ctx?.vertexAttribPointer(
-			programInfo?.attribLocations.vertexPosition,
-			numComponents,
-			type,
-			normalize,
-			stride,
-			offset,
-		);
-		
-		ctx?.enableVertexAttribArray(programInfo?.attribLocations.vertexPosition);
-
-		ctx?.vertexAttribPointer(
-			programInfo?.attribLocations.texPosition,
-			2, ctx?.FLOAT, false, 16, 8
-		);
-		ctx?.enableVertexAttribArray(programInfo?.attribLocations.texPosition);
-
-		ctx?.drawElements(ctx?.TRIANGLES, 6, ctx?.UNSIGNED_BYTE, 0)
-	}
-}
-
-export { type Shape, Rectangle, Triangle, TextureRect, GradientRect };
+export { type Shape, Rectangle, Triangle, TextureRect};
