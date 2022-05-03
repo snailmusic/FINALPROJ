@@ -158,7 +158,7 @@ class Enemy extends GameObject {
 				)
 			);
 		}
-	}
+	
 }
 
 export { Enemy, type PatternType}
