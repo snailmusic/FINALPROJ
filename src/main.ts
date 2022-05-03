@@ -1,3 +1,4 @@
+import "./dark.css"
 import "./style.css";
 import { mat4 } from "gl-matrix-ts";
 
@@ -5,7 +6,7 @@ import Canvas from "./WebGL/Canvas";
 import Shader from "./WebGL/Shader";
 import { Enemy } from "./Enemy";
 // import GameObject from "./GameObject";
-import { gameObjects, drawAll, setPlayer } from "./Global";
+import { gameObjects, drawAll, setPlayer, setDelta, player } from "./Global";
 import Player from "./Player";
 
 const canv = new Canvas(640, 480);
@@ -23,11 +24,20 @@ const shaders: Shaders = {
 	gradient: new Shader(canv),
 };
 
+const statsHolder = document.createElement("div");
+statsHolder.className = "stats";
+
+
 const fpsCounter = document.createElement("p");
 fpsCounter.appendChild(document.createTextNode("0"));
 
+const livesDisplay = document.createElement("p");
+livesDisplay.appendChild(document.createTextNode("Lives: 0"))
+
 document?.body.appendChild(canv.c);
-document.body.appendChild(fpsCounter);
+document.body.appendChild(statsHolder);
+statsHolder.appendChild(livesDisplay);
+statsHolder.appendChild(fpsCounter);
 
 function init() {
 	console.log("hello!");
@@ -47,9 +57,10 @@ function init() {
 			gl?.blendFunc(gl?.SRC_ALPHA, gl?.ONE_MINUS_SRC_ALPHA);
 
 			gameObjects.push(
-				new Enemy({ x: 100, y: 100 }, 2, canv, shaders.basic),
+				// new Enemy({ x: 100, y: 100 }, 1, canv, shaders.basic),
+				new Enemy({ x: 300, y: 100 }, 2, canv, shaders.basic),
 			);
-			const play = new Player({ x: 300, y: 300 }, shaders.basic, canv);
+			const play = new Player(shaders.basic, canv);
 			gameObjects.push(
 				play
 			);
@@ -64,8 +75,12 @@ let prev = 0;
 
 function update(delta: DOMHighResTimeStamp) {
 	const fps = Math.round(1000 / (delta - prev));
+	setDelta(delta - prev);
 	prev = delta;
-	fpsCounter.innerText = fps.toString();
+
+	
+	fpsCounter.innerText = fps.toString() + " FPS";
+	livesDisplay.innerText = `Lives: ${player?.lives}`
 	draw();
 	window.requestAnimationFrame(update);
 }
@@ -95,7 +110,13 @@ function draw() {
 		false,
 		mat4.create(),
 	);
-	drawAll(canv);
+
+	//@ts-ignore
+	drawAll(canv, (obj)=>{
+		if (obj.constructor.name == "Enemy") {
+			// obj.pos.y += 0.3;    
+		}
+	});
 }
 
 window.onload = init;

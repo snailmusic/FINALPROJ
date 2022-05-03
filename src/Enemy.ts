@@ -5,7 +5,7 @@ import Canvas from "./WebGL/Canvas";
 import Shader from "./WebGL/Shader";
 import { TextureRect } from "./WebGL/Shapes";
 import { Vec2 } from "./WebGL/Types";
-import { gameObjects, player, range } from "./Global";
+import { gameObjects, killEnemy, player, range } from "./Global";
 
 enum PatternType {
 	Spiral,
@@ -55,94 +55,124 @@ class Enemy extends GameObject {
 		// ++this.interval also returns the value while incrementing
 		for (const obj of gameObjects) {
 			if (obj.constructor.name == "Bullet") {
-				if (
+				if (    
 					obj.collider.intersects(this.collider) &&
 					obj.owner == "player"
 				) {
 					console.log("enemy :flushed:");
 					this.lives--;
-					obj.toRemove = true;
+					obj.toKeep = false;
 				}
 			}
+		}
+		if (this.lives < 0) {
+			this.toKeep = false;
+			killEnemy();
 		}
 		if (++this.interval >= this.speed) {
 			switch (this.type) {
 				case PatternType.Focused:
-					const relPos: Vec2 = {
-						x: (player?.pos.x || 0) - this.pos.x,
-						y: (player?.pos.y || 0) - this.pos.y
-					}
-					let angleToPlayer = Math.atan(
-						relPos.y / relPos.x,
-					);
-					// t2=\pi\ -t1*-1
-					if (relPos.x < 0) {
-						angleToPlayer += Math.PI;
-					}
-					gameObjects.push(
-						new Bullet(
-							{ x: this.pos.x + 32, y: this.pos.y + 32 },
-							this.canvas,
-							this.shader,
-							angleToPlayer,
-						),
-					);
+					focusedBullet();
 					break;
 
 				case PatternType.Radial:
-					for (const i of range(0, 7)) {
-						const relPos: Vec2 = {
-							x: Math.sin((i * Math.PI) / 4) * 32,
-							y: Math.cos((i * Math.PI) / 4) * 32,
-						};
-						const centerPos = {
-							x: this.pos.x + 32,
-							y: this.pos.y + 32,
-						};
-						gameObjects.push(
-							new Bullet(
-								{
-									x: relPos.x + centerPos.x,
-									y: relPos.y + centerPos.y,
-								},
-								this.canvas,
-								this.shader,
-								(Math.PI / 4) * (-i + 2),
-							),
-						);
-					}
+					radialBullet();
 					break;
 
 				case PatternType.Spiral:
-					this.counter++;
-					for (const i of range(0, 7)) {
-						const relPos: Vec2 = {
-							x: Math.sin((i * Math.PI) / 4 - this.counter) * 32,
-							y: Math.cos((i * Math.PI) / 4 - this.counter) * 32,
-						};
-						const centerPos = {
-							x: this.pos.x + 32,
-							y: this.pos.y + 32,
-						};
-						gameObjects.push(
-							new Bullet(
-								{
-									x: relPos.x + centerPos.x,
-									y: relPos.y + centerPos.y,
-								},
-								this.canvas,
-								this.shader,
-								(Math.PI / 4) * (-i + 2) + this.counter,
-							),
-						);
-					}
+					spiralBullet();
 
 				default:
 					break;
 			}
 			this.interval = 0;
 		}
+
+		spiralBullet() {
+			this.counter++;
+			for (const i of range(0, 7)) {
+				const relPos: Vec2 = {
+					x: Math.sin((i * Math.PI) / 4 - this.counter) * 32,
+					y: Math.cos((i * Math.PI) / 4 - this.counter) * 32,
+				};
+				const centerPos = {
+					x: this.pos.x + 32,
+					y: this.pos.y + 32,
+				};
+				gameObjects.push(
+					new Bullet(
+						{
+							x: relPos.x + centerPos.x,
+							y: relPos.y + centerPos.y,
+						},
+						this.canvas,
+						this.shader,
+						(Math.PI / 4) * (-i + 2) + this.counter
+					)
+				);
+			}
+		}
+
+		radialBullet() {
+			for (const i of range(0, 7)) {
+				const relPos: Vec2 = {
+					x: Math.sin((i * Math.PI) / 4) * 32,
+					y: Math.cos((i * Math.PI) / 4) * 32,
+				};
+				const centerPos = {
+					x: this.pos.x + 32,
+					y: this.pos.y + 32,
+				};
+				gameObjects.push(
+					new Bullet(
+						{
+							x: relPos.x + centerPos.x,
+							y: relPos.y + centerPos.y,
+						},
+						this.canvas,
+						this.shader,
+						(Math.PI / 4) * (-i + 2)
+					)
+				);
+			}
+		}
+
+		focusedBullet() {
+			const relPos: Vec2 = {
+				x: (player?.pos.x || 0) - this.pos.x,
+				y: (player?.pos.y || 0) - this.pos.y
+			};
+			let angleToPlayer = Math.atan(
+				relPos.y / relPos.x
+			);
+			// t2=\pi\ -t1*-1
+			if (relPos.x < 0) {
+				angleToPlayer += Math.PI;
+			}
+			gameObjects.push(
+				new Bullet(
+					{ x: this.pos.x + 32, y: this.pos.y + 32 },
+					this.canvas,
+					this.shader,
+					angleToPlayer
+				)
+			);
+		}
 	}
 }
 
 export { Enemy, type PatternType}
+
+function focusedBullet() {
+	throw new Error("Function not implemented.");
+}
+
+
+function radialBullet() {
+	throw new Error("Function not implemented.");
+}
+
+
+function spiralBullet() {
+	throw new Error("Function not implemented.");
+}

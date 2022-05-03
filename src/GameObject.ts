@@ -7,14 +7,14 @@ export default abstract class GameObject {
 	size: Vec2;
 	cullable: boolean;
 	owner: string;
-	toRemove: boolean;
+	toKeep: boolean;
 	constructor(pos: Vec2, size: Vec2) {
 		this.pos = pos;
 		this.size = size;
 		this.collider = new Collider(pos, size);
 		this.cullable = false;
 		this.owner = "other";
-		this.toRemove = false;
+		this.toKeep = true;
 	}
 
 	abstract draw(): void;

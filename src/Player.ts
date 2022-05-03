@@ -3,7 +3,6 @@ import GameObject from "./GameObject";
 import Canvas from "./WebGL/Canvas";
 import Shader from "./WebGL/Shader";
 import { TextureRect } from "./WebGL/Shapes";
-import { Vec2 } from "./WebGL/Types";
 import { curkeys, mousePos } from "./WebGL/Events";
 import { gameObjects } from "./Global";
 import Bullet from "./Bullet";
@@ -14,17 +13,19 @@ export default class Player extends GameObject {
 	rect: TextureRect;
 	speed = 5;
 	justPressed = false;
-	constructor(pos: Vec2, shader: Shader, canvas: Canvas) {
-		super(pos, { x: 32, y: 32 });
+	lives: number;
+	constructor(shader: Shader, canvas: Canvas) {
+		super(mousePos, { x: 8, y: 8   });
 		this.shader = shader;
 		this.canvas = canvas;
 		this.rect = new TextureRect(
-			{ x: 0, y: 0 },
+			{ x: -16, y: -16    },
 			{ x: 32, y: 32 },
 			canvas,
 			"images/player.png",
 			shader,
 		);
+		this.lives = 10;
 	}
 
 	draw(): void {
@@ -39,7 +40,7 @@ export default class Player extends GameObject {
 		);
 		this.rect.draw();
 
-		this.pos = mousePos;
+		// this.pos = mousePos;    
 
 		if (curkeys[32] && !this.justPressed) {
 			this.justPressed = true;
@@ -61,9 +62,19 @@ export default class Player extends GameObject {
 			if (obj.constructor.name != "Player") {
 				if (obj.collider.intersects(this.collider) &&  obj.owner != "player") {
 					console.log("sussy :flushed:");
-					obj.toRemove = true;   
+					if (obj.constructor.name != "Enemy") {
+						obj.toKeep = false;
+						--this.lives;
+					}
+					else {
+						this.lives = 0;
+					}
 				}
 			}
+		}
+
+		if (this.lives == 0) {
+			alert("shiet")
 		}
 	}
 }

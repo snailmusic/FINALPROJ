@@ -1,0 +1,143 @@
+/* blue is default cuz it looks nice :) */
+:root {
+	--hue: 201;
+	--bg-main: hsl(0, 0%, 13%);
+	--bg-dark: hsl(0, 0%, 10%);
+	--bg-light: hsl(0, 0%, 20%);
+	--bg-lighter: hsl(0, 0%, 32%);
+	--accent-main: hsl(var(--hue), 100%, 68%);
+	--accent-dark: hsl(var(--hue), 89%, 57%);
+	--accent-light: hsl(var(--hue), 97%, 75%);
+	--highlight-main: hsl(0, 0%, 44%);
+	--text-color: white;
+	--link-color: hsl(var(--hue), 100%, 79%);
+	--visit-color: hsl(var(--hue), 100%, 62%);
+}
+
+a {
+	color: var(--link-color);
+}
+a:visited {
+	color: var(--visit-color);
+}
+
+html {
+	background-color: var(--bg-main);
+	color: var(--text-color);
+	font-family: Arial, Helvetica, sans-serif;
+	line-height: 1.4rem;
+}
+input,
+textarea,
+select,
+button {
+	background-color: var(--bg-light);
+	color: var(--text-color);
+	border: 1px solid var(--highlight-main);
+	border-radius: 4px;
+	font-family: Arial, Helvetica, sans-serif;
+	outline: 0px none;
+	transition: background 0.5s, border 0.5s, outline 0.5s;
+}
+
+input:hover,
+textarea:hover,
+select:hover,
+button:hover,
+button:focus-within {
+	background-color: var(--bg-lighter);
+}
+input:focus-within,
+textarea:focus-within,
+select:focus-within,
+button:active {
+	transition: none;
+	background-color: var(--bg-main);
+	border: 1px solid var(--accent-main);
+	outline: 1px solid var(--accent-main);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	text-align: center;
+	margin: 0.5em 0;
+	margin-bottom: 0.5em;
+}
+
+tr {
+	text-align: center;
+}
+td,
+th {
+	padding: 2px;
+}
+tr:nth-child(even) {
+	background-color: var(--bg-light);
+}
+tr:nth-child(odd) {
+	background-color: var(--bg-main);
+}
+table {
+	width: 100%;
+	background-color: var(--bg-lighter);
+}
+
+/* COLOR SCHEMES :) */
+
+.light {
+	--bg-main: hsl(var(--hue), 100%, 98%);
+	--bg-dark: hsl(var(--hue), 25%, 86%);
+	--bg-light: hsl(var(--hue), 25%, 89%);
+	--bg-lighter: hsl(var(--hue), 25%, 91%);
+	--highlight-main: hsl(0, 0%, 44%);
+	--text-color: rgb(33, 33, 33);
+	--link-color: hsl(var(--hue), 100%, 50%);
+	--visit-color: hsl(var(--hue), 100%, 14%);
+}
+
+.red {
+	--hue: 0;
+}
+
+.orange {
+	--hue: 21;
+}
+
+.green {
+	--hue: 135;
+}
+
+.blue {
+	--hue: 201;
+}
+
+.purple {
+	--hue: 275;
+}
+
+.pink {
+	--hue: 302;
+}
+
+.gray,
+.grey {
+	--accent-main: hsl(302, 0%, 68%);
+	--accent-dark: hsl(302, 0%, 57%);
+	--accent-light: hsl(302, 0%, 75%);
+}
+
+.grey.light,
+.gray.light {
+	--bg-main: hsl(0, 0%, 98%);
+	--bg-dark: hsl(0, 0%, 86%);
+	--bg-light: hsl(0, 0%, 89%);
+	--bg-lighter: hsl(0, 0%, 91%);
+	--highlight-main: hsl(0, 0%, 44%);
+	--text-color: rgb(33, 33, 33);
+	--link-color: hsl(201, 100%, 50%);
+	--visit-color: hsl(201, 100%, 14%);
+}

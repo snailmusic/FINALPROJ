@@ -1,0 +1,43 @@
+Date : 2022-05-03 10:58:02
+Directory : c:\Users\nadas4340\Documents\FINALPROJ\src
+Total : 17 files,  1122 codes, 50 comments, 171 blanks, all 1343 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| TypeScript |         15 |        969 |         48 |        153 |      1,170 |
+| CSS        |          2 |        153 |          2 |         18 |        173 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++-------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                        | files      | code       | comment    | blank      | total      |
++-------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                           |         17 |      1,122 |         50 |        171 |      1,343 |
+| WebGL                                                       |          7 |        528 |         39 |         91 |        658 |
++-------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                    | language   | code       | comment    | blank      | total      |
++-------------------------------------------------------------+------------+------------+------------+------------+------------+
+| c:\Users\nadas4340\Documents\FINALPROJ\src\Bullet.ts        | TypeScript |         45 |          1 |          8 |         54 |
+| c:\Users\nadas4340\Documents\FINALPROJ\src\Collider.ts      | TypeScript |         18 |          0 |          4 |         22 |
+| c:\Users\nadas4340\Documents\FINALPROJ\src\Enemy.ts         | TypeScript |        141 |          2 |          9 |        152 |
+| c:\Users\nadas4340\Documents\FINALPROJ\src\GameObject.ts    | TypeScript |         19 |          0 |          2 |         21 |
+| c:\Users\nadas4340\Documents\FINALPROJ\src\Global.ts        | TypeScript |         48 |          1 |          9 |         58 |
+| c:\Users\nadas4340\Documents\FINALPROJ\src\Player.ts        | TypeScript |         73 |          1 |          7 |         81 |
+| c:\Users\nadas4340\Documents\FINALPROJ\src\WebGL\Buffers.ts | TypeScript |         39 |          2 |          6 |         47 |
+| c:\Users\nadas4340\Documents\FINALPROJ\src\WebGL\Canvas.ts  | TypeScript |         23 |          0 |          3 |         26 |
+| c:\Users\nadas4340\Documents\FINALPROJ\src\WebGL\Events.ts  | TypeScript |         39 |          1 |          7 |         47 |
+| c:\Users\nadas4340\Documents\FINALPROJ\src\WebGL\Shader.ts  | TypeScript |        119 |         12 |         30 |        161 |
+| c:\Users\nadas4340\Documents\FINALPROJ\src\WebGL\Shapes.ts  | TypeScript |        192 |          6 |         18 |        216 |
+| c:\Users\nadas4340\Documents\FINALPROJ\src\WebGL\Texture.ts | TypeScript |         54 |          3 |         13 |         70 |
+| c:\Users\nadas4340\Documents\FINALPROJ\src\WebGL\Types.ts   | TypeScript |         62 |         15 |         14 |         91 |
+| c:\Users\nadas4340\Documents\FINALPROJ\src\dark.css         | CSS        |        126 |          2 |         15 |        143 |
+| c:\Users\nadas4340\Documents\FINALPROJ\src\main.ts          | TypeScript |         97 |          3 |         22 |        122 |
+| c:\Users\nadas4340\Documents\FINALPROJ\src\style.css        | CSS        |         27 |          0 |          3 |         30 |
+| c:\Users\nadas4340\Documents\FINALPROJ\src\vite-env.d.ts    | TypeScript |          0 |          1 |          1 |          2 |
+| Total                                                       |            |      1,122 |         50 |        171 |      1,343 |
++-------------------------------------------------------------+------------+------------+------------+------------+------------+

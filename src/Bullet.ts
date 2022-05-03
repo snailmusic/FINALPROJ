@@ -4,6 +4,7 @@ import Canvas from "./WebGL/Canvas";
 import Shader from "./WebGL/Shader";
 import { TextureRect } from "./WebGL/Shapes";
 import { Vec2 } from "./WebGL/Types";
+import { currentDelta } from "./Global";
 
 export default class Bullet extends GameObject {
   texRect: TextureRect;
@@ -27,14 +28,17 @@ export default class Bullet extends GameObject {
     this.cullable = true;
 
     this.owner = owner || "other";
+
+    // console.log(currentDelta);
+    
   }
 
   draw(): void {
     const { gl } = this.canvas;
     const programInfo = this.shader.programInfo;
-    const speed = 3;
-    this.pos.x += Math.cos(this.angle) * speed;
-    this.pos.y += Math.sin(this.angle) * speed;
+    const speed = 0.2;
+    this.pos.x += Math.cos(this.angle) * speed * currentDelta;
+    this.pos.y += Math.sin(this.angle) * speed * currentDelta;
     const model = mat4.create();
 
     mat4.translate(model, model, [this.pos.x, this.pos.y, 0]);

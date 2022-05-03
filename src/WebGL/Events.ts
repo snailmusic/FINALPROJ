@@ -16,8 +16,9 @@ window.addEventListener("keyup", (e) => {
 	curkeys[Number(e.keyCode)] = false;
 });
 window.addEventListener("mousemove", (e)=>{
-	mousePos.x = e.clientX;
-	mousePos.y = e.clientY;
+	const cav:HTMLElement = document.getElementsByTagName("canvas")[0];
+	mousePos.x = e.clientX - cav.offsetLeft;
+	mousePos.y = e.clientY - cav.offsetTop;
 })
 window.addEventListener("mousedown", (e) =>{
 	mouseButton[e.button] = true;
