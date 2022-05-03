@@ -87,7 +87,7 @@ class Enemy extends GameObject {
 			}
 			this.interval = 0;
 		}
-
+	}
 		spiralBullet() {
 			this.counter++;
 			for (const i of range(0, 7)) {
@@ -139,8 +139,8 @@ class Enemy extends GameObject {
 
 		focusedBullet() {
 			const relPos: Vec2 = {
-				x: (player?.pos.x || 0) - this.pos.x,
-				y: (player?.pos.y || 0) - this.pos.y
+				x: (player?.pos.x || 0) - this.pos.x + 16,
+				y: (player?.pos.y || 0) - this.pos.y + 16
 			};
 			let angleToPlayer = Math.atan(
 				relPos.y / relPos.x
