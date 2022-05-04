@@ -43,7 +43,7 @@ export default class Player extends GameObject {
 		// this.pos = mousePos;    
 
 		if (curkeys[32] && !this.justPressed) {
-			this.justPressed = true;
+			this.justPressed = true;   
 			gameObjects.push(
 				new Bullet(
 					{ x: this.pos.x, y: this.pos.y - 16 },
@@ -67,14 +67,15 @@ export default class Player extends GameObject {
 						--this.lives;
 					}
 					else {
-						this.lives = 0;
+						// this.lives = 0;
 					}
 				}
 			}
 		}
 
 		if (this.lives == 0) {
-			alert("shiet")
+			console.log("lol sorry");
+			
 		}
 	}
 }

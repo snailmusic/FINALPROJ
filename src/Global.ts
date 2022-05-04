@@ -54,4 +54,10 @@ function setDelta(delta:DOMHighResTimeStamp) {
 	currentDelta = delta;
 }
 
-export {currentDelta, setDelta, gameObjects, range, drawAll, player, setPlayer, killEnemy, score, calcScore};
+
+const audioClips  = {
+	"bg": new Audio("music/bgm.mp3"),
+	"hit": new Audio("music/hit.wav")
+}
+
+export {audioClips, currentDelta, setDelta, gameObjects, range, drawAll, player, setPlayer, killEnemy, score, calcScore};

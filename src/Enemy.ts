@@ -5,7 +5,7 @@ import Canvas from "./WebGL/Canvas";
 import Shader from "./WebGL/Shader";
 import { TextureRect } from "./WebGL/Shapes";
 import { Vec2 } from "./WebGL/Types";
-import { gameObjects, killEnemy, player, range } from "./Global";
+import { audioClips, gameObjects, killEnemy, player, range } from "./Global";
 
 enum PatternType {
 	Spiral,
@@ -23,6 +23,7 @@ class Enemy extends GameObject {
 	counter: number;
 	lives: number;
 	speed: number;
+	sickoMode: boolean;
 	constructor(pos: Vec2, type: PatternType, canvas: Canvas, shader: Shader) {
 		super(pos, { x: 64, y: 64 });
 		this.type = type;
@@ -42,9 +43,11 @@ class Enemy extends GameObject {
 		this.lives = 10;
 		this.speed = 20;
 
-		if (type == PatternType.Focused) {
-			this.speed = 10;
-		}
+		this.sickoMode = false;
+
+		// if (type == PatternType.Focused) {
+		// 	this.speed = 10;
+		// }
 	}
 
 	draw(): void {
@@ -68,6 +71,9 @@ class Enemy extends GameObject {
 					console.log("enemy :flushed:");
 					this.lives--;
 					obj.toKeep = false;
+
+					audioClips.hit.currentTime = 0;
+					audioClips.hit.play();
 				}
 			}
 		}
@@ -75,6 +81,9 @@ class Enemy extends GameObject {
 			this.toKeep = false;
 			killEnemy();
 		}
+
+		this.speed = this.sickoMode ? 1:20;
+
 		if (++this.interval >= this.speed) {
 			switch (this.type) {
 				case PatternType.Focused:

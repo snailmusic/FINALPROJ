@@ -11,6 +11,8 @@ body{
 
 canvas{
   cursor: none;
+  /* aspect-ratio: 9/16;
+  height: 80vh; */
 }
 
 .stats{
