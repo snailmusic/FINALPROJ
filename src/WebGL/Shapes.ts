@@ -213,4 +213,107 @@ class TextureRect implements Shape{
 	}
 }
 
-export { type Shape, Rectangle, Triangle, TextureRect};
+class GradientRect implements Shape {
+	position: Vec2;
+	size: Vec2;
+	canvas: Canvas;
+	color: Color;
+	shader: Shader;
+	vb: VertexBuffer;
+	ib: IndexBuffer;
+	texture: Texture;
+
+	static cache: { [key: string]: Texture } = {};
+
+	constructor(
+		pos: Vec2,
+		size: Vec2,
+		canvas: Canvas,
+		texUrl: string,
+		shader: Shader,
+		dynamic: boolean = false,
+	) {
+		this.color = Colors.transparent;
+		this.position = pos;
+		this.size = size;
+		this.canvas = canvas;
+		let { gl: ctx } = canvas;
+		this.shader = shader;
+		if (!TextureRect.cache[texUrl]) {
+			TextureRect.cache[texUrl] = new Texture(texUrl, canvas, shader);
+		}
+		this.texture = TextureRect.cache[texUrl];
+		let positions = [
+			0 + pos.x,
+			0 + pos.y,
+			0,
+			0,
+			size.x + pos.x,
+			0 + pos.y,
+			1,
+			0,
+			0 + pos.x,
+			size.y + pos.y,
+			0,
+			1,
+			size.x + pos.x,
+			size.y + pos.y,
+			1,
+			1,
+		];
+		// let positions = [
+		// 	0, 0,    0, 0,
+		// 	256, 0,  1, 0,
+		// 	0, 256,  0, 1,
+		// 	256,256, 1, 1
+		// ]
+		let idx = [0, 1, 2, 3, 1, 2];
+		let type = ctx?.STATIC_DRAW;
+		if (dynamic) {
+			type = ctx?.DYNAMIC_DRAW;
+		}
+		this.ib = new IndexBuffer(idx, ctx, type);
+		this.vb = new VertexBuffer(positions, ctx, type);
+	}
+
+	draw(): void {
+		const { programInfo } = this.shader;
+		let { gl: ctx } = this.canvas;
+		this.texture.bind();
+		this.shader.bind();
+		this.ib.bind();
+		this.vb.bind();
+
+		const numComponents = 2;
+		const type = ctx?.FLOAT;
+		const normalize = false;
+		const stride = 16;
+		const offset = 0;
+		ctx?.vertexAttribPointer(
+			programInfo?.attribLocations.vertexPosition,
+			numComponents,
+			type,
+			normalize,
+			stride,
+			offset,
+		);
+
+		ctx?.enableVertexAttribArray(
+			programInfo?.attribLocations.vertexPosition,
+		);
+
+		ctx?.vertexAttribPointer(
+			programInfo?.attribLocations.texPosition,
+			2,
+			ctx?.FLOAT,
+			false,
+			16,
+			8,
+		);
+		ctx?.enableVertexAttribArray(programInfo?.attribLocations.texPosition);
+
+		ctx?.drawElements(ctx?.TRIANGLES, 6, ctx?.UNSIGNED_BYTE, 0);
+	}
+}
+
+export { type Shape, Rectangle, Triangle, TextureRect, GradientRect};
