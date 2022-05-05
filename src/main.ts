@@ -1,4 +1,4 @@
-import "./dark.css"
+import "./dark.css";
 import "./style.css";
 import { mat4 } from "gl-matrix-ts";
 
@@ -6,8 +6,18 @@ import Canvas from "./WebGL/Canvas";
 import Shader from "./WebGL/Shader";
 import { Enemy } from "./Enemy";
 // import GameObject from "./GameObject";
-import { gameObjects, drawAll, setPlayer, setDelta, player, audioClips, calcScore } from "./Global";
+import {
+	gameObjects,
+	drawAll,
+	setPlayer,
+	setDelta,
+	player,
+	audioClips,
+	calcScore,
+} from "./Global";
 import Player from "./Player";
+import Background from "./Bg";
+import { GradientRect } from "./WebGL/Shapes";
 
 const canv = new Canvas(480, 854);
 
@@ -27,14 +37,15 @@ const shaders: Shaders = {
 const statsHolder = document.createElement("div");
 statsHolder.className = "stats";
 
-
 const fpsCounter = document.createElement("p");
 fpsCounter.appendChild(document.createTextNode("0"));
 
 const livesDisplay = document.createElement("p");
-livesDisplay.appendChild(document.createTextNode("Lives: 0"))
+livesDisplay.appendChild(document.createTextNode("Lives: 0"));
 const scoreDisplay = document.createElement("p");
 scoreDisplay.appendChild(document.createTextNode("Lives: 0"));
+
+let gradient: any;
 
 document?.body.appendChild(canv.c);
 document.body.appendChild(statsHolder);
@@ -57,25 +68,40 @@ function init() {
 
 			return Shader.Load("assets/Gradient.shader");
 		})
-		.then((val)=> {
-
+		.then((val) => {
 			shaders.gradient.initShaderProgram(val.vert, val.frag);
 			shaders.gradient.addAttribLoc("vertexPosition", "aVertexPosition");
 			shaders.gradient.addAttribLoc("texPosition", "aTextureCoord");
 			shaders.gradient.addUniformLoc("uViewMatrix");
 			shaders.gradient.addUniformLoc("uModelMatrix");
 			shaders.gradient.addUniformLoc("uProjectionMatrix");
-			shaders.gradient.addUniformLoc("start", "uStart");
-			shaders.gradient.addUniformLoc("end", "uEnd");
+			shaders.gradient.addUniformLoc("uStart");
+			shaders.gradient.addUniformLoc("uEnd");
 
 			const { gl } = canv;
 			gl?.enable(gl?.BLEND);
 			gl?.blendFunc(gl?.SRC_ALPHA, gl?.ONE_MINUS_SRC_ALPHA);
-
-			gameObjects.push(
-				new Enemy({ x: 100, y: 100 }, 0, canv, shaders.basic),
-				new Enemy({ x: 300, y: 100 }, 0, canv, shaders.basic),
+			gradient = new GradientRect(
+				{ x: 1, y: 1 },
+				{ x: 30, y: 30 },
+				canv,
+				{ r: 1, g: 1, b: 1, a: 1 },
+				{ r: 0, g: 0, b: 0, a: 1 },
+				shaders.gradient
 			);
+			// gameObjects.push(
+			// 	new Background(
+			// 		{ r: 0, g: 0, b: 0, a: 1 },
+			// 		{ r: 1, g: 1, b: 1, a: 1 },
+			// 		canv,
+			// 		shaders.gradient,
+			// 	),
+			// );
+
+			// gameObjects.push(
+			// 	new Enemy({ x: 100, y: 100 }, 0, canv, shaders.basic),
+			// 	new Enemy({ x: 300, y: 100 }, 0, canv, shaders.basic),
+			// );
 			const play = new Player(shaders.basic, canv);
 			gameObjects.push(play);
 			setPlayer(play);
@@ -92,12 +118,11 @@ function update(delta: DOMHighResTimeStamp) {
 	setDelta(delta - prev);
 	prev = delta;
 
-	audioClips.bg.play();
+	audioClips.bg.play().catch(()=>{});
 
-	
 	fpsCounter.innerText = fps.toString() + " FPS";
-	livesDisplay.innerText = `Lives: ${player?.lives}`
-	scoreDisplay.innerText = `Score: ${calcScore()}`
+	livesDisplay.innerText = `Lives: ${player?.lives}`;
+	scoreDisplay.innerText = `Score: ${calcScore()}`;
 	draw();
 	window.requestAnimationFrame(update);
 }
@@ -111,7 +136,19 @@ function draw() {
 	gl?.clear(gl?.COLOR_BUFFER_BIT | gl?.DEPTH_BUFFER_BIT);
 	// shaders.basic?.bind();
 	shaders.basic?.bind();
-	const programInfo = shaders.basic?.programInfo;
+	let programInfo = shaders.basic?.programInfo;
+	gl?.uniformMatrix4fv(
+		programInfo?.uniformLocations.uViewMatrix,
+		false,
+		viewMat,
+	);
+	gl?.uniformMatrix4fv(
+		programInfo?.uniformLocations.uProjectionMatrix,
+		false,
+		projMat,
+	);
+
+	programInfo = shaders.gradient?.programInfo;
 	gl?.uniformMatrix4fv(
 		programInfo?.uniformLocations.uViewMatrix,
 		false,
@@ -124,21 +161,14 @@ function draw() {
 	);
 
 	//@ts-ignore
-	drawAll(canv, (obj)=>{
+	drawAll(canv, (obj) => {
 		if (obj.constructor.name == "Enemy") {
 			obj.pos.y += 0.3;
 		}
-		gl?.uniformMatrix4fv(
-			programInfo?.uniformLocations.uViewMatrix,
-			false,
-			viewMat,
-		);
-		gl?.uniformMatrix4fv(
-			programInfo?.uniformLocations.uProjectionMatrix,
-			false,
-			projMat,
-		);
+
 	});
+
+	gradient.draw();
 }
 
 window.onload = init;

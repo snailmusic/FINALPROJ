@@ -221,15 +221,16 @@ class GradientRect implements Shape {
 	shader: Shader;
 	vb: VertexBuffer;
 	ib: IndexBuffer;
-	texture: Texture;
+	startColor: Color;
+	endColor: Color;
 
-	static cache: { [key: string]: Texture } = {};
 
 	constructor(
 		pos: Vec2,
 		size: Vec2,
 		canvas: Canvas,
-		texUrl: string,
+		start: Color,
+		end: Color,
 		shader: Shader,
 		dynamic: boolean = false,
 	) {
@@ -239,10 +240,8 @@ class GradientRect implements Shape {
 		this.canvas = canvas;
 		let { gl: ctx } = canvas;
 		this.shader = shader;
-		if (!TextureRect.cache[texUrl]) {
-			TextureRect.cache[texUrl] = new Texture(texUrl, canvas, shader);
-		}
-		this.texture = TextureRect.cache[texUrl];
+		this.startColor = start;
+		this.endColor = end;
 		let positions = [
 			0 + pos.x,
 			0 + pos.y,
@@ -279,8 +278,9 @@ class GradientRect implements Shape {
 	draw(): void {
 		const { programInfo } = this.shader;
 		let { gl: ctx } = this.canvas;
-		this.texture.bind();
 		this.shader.bind();
+		// console.log(this.shader);
+		
 		this.ib.bind();
 		this.vb.bind();
 
@@ -311,6 +311,19 @@ class GradientRect implements Shape {
 			8,
 		);
 		ctx?.enableVertexAttribArray(programInfo?.attribLocations.texPosition);
+
+		ctx.uniform3f(
+			programInfo?.uniformLocations.uStart,
+			this.startColor.r,
+			this.startColor.g,
+			this.startColor.b
+		);
+		ctx.uniform3f(
+			programInfo?.uniformLocations.uEnd,
+			this.endColor.r,
+			this.endColor.g,
+			this.endColor.b,
+		);
 
 		ctx?.drawElements(ctx?.TRIANGLES, 6, ctx?.UNSIGNED_BYTE, 0);
 	}
