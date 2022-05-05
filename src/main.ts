@@ -4,7 +4,7 @@ import { mat4 } from "gl-matrix-ts";
 
 import Canvas from "./WebGL/Canvas";
 import Shader from "./WebGL/Shader";
-import { Enemy } from "./Enemy";
+// import { Enemy } from "./Enemy";
 // import GameObject from "./GameObject";
 import {
 	gameObjects,
@@ -16,7 +16,7 @@ import {
 	calcScore,
 } from "./Global";
 import Player from "./Player";
-import Background from "./Bg";
+// import Background from "./Bg";
 import { GradientRect } from "./WebGL/Shapes";
 
 const canv = new Canvas(480, 854);
