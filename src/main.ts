@@ -148,6 +148,7 @@ function draw() {
 		projMat,
 	);
 
+	shaders.gradient.bind();
 	programInfo = shaders.gradient?.programInfo;
 	gl?.uniformMatrix4fv(
 		programInfo?.uniformLocations.uViewMatrix,

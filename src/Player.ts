@@ -32,6 +32,7 @@ export default class Player extends GameObject {
 		const model = mat4.create();
 		const { gl } = this.canvas;
 		const programInfo = this.shader.programInfo;
+		this.shader.bind();
 		mat4.translate(model, model, [this.pos.x, this.pos.y, 0]);
 		gl?.uniformMatrix4fv(
 			programInfo?.uniformLocations.uModelMatrix,
