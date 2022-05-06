@@ -59,7 +59,7 @@ export default class Player extends GameObject {
 			this.justPressed = false;
 		}
 
-		for (const obj of gameObjects) {
+		for (const obj of gameObjects.array) {
 			if (obj.constructor.name != "Player") {
 				if (obj.collider.intersects(this.collider) &&  obj.owner != "player") {
 					console.log("sussy :flushed:");

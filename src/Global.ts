@@ -1,4 +1,5 @@
-import GameObject from "./GameObject";
+
+import GameObjectQueue from "./GameObjectQueue";
 import Player from "./Player";
 import Canvas from "./WebGL/Canvas";
 
@@ -11,30 +12,6 @@ function killEnemy() {
 
 function calcScore() {
 	return score.enemies * 10;
-}
-
-let gameObjects: GameObject[] = [];
-function drawAll(canv:Canvas, customFunc?:Function) {
-	const temp = [];
-	if (customFunc == undefined) {
-		customFunc = () => {};  
-	}
-	for (const obj of gameObjects) {
-		obj.draw();
-		if (
-			(!(
-				obj.pos.x > canv.c.width ||
-				obj.pos.x + obj.size.x < 0 ||
-				obj.pos.y > canv.c.height ||
-				obj.pos.y + obj.size.y < 0
-			) || !obj.cullable) && obj.toKeep
-		) {
-			temp.push(obj);
-			customFunc(obj);
-		}
-		// debugger;
-	}
-	gameObjects = temp;
 }
 
 let player: Player | undefined = undefined;
@@ -60,4 +37,7 @@ const audioClips  = {
 	"hit": new Audio("music/hit.wav")
 }
 
-export {audioClips, currentDelta, setDelta, gameObjects, range, drawAll, player, setPlayer, killEnemy, score, calcScore};
+const canv = new Canvas(480, 800);
+const gameObjects = new GameObjectQueue(canv);
+
+export {canv, gameObjects, audioClips, currentDelta, setDelta,  range, player, setPlayer, killEnemy, score, calcScore};

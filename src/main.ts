@@ -2,13 +2,12 @@ import "./dark.css";
 import "./style.css";
 import { mat4 } from "gl-matrix-ts";
 
-import Canvas from "./WebGL/Canvas";
 import Shader from "./WebGL/Shader";
 // import { Enemy } from "./Enemy";
 // import GameObject from "./GameObject";
 import {
+	canv,
 	gameObjects,
-	drawAll,
 	setPlayer,
 	setDelta,
 	player,
@@ -17,12 +16,10 @@ import {
 } from "./Global";
 import Player from "./Player";
 // import Background from "./Bg";
-import { GradientRect } from "./WebGL/Shapes";
 import Background from "./Bg";
 import { Enemy } from "./Enemy";
 import { Colors } from "./WebGL/Types";
 
-const canv = new Canvas(480, 854);
 
 const projMat = mat4.create();
 mat4.ortho(projMat, 0, canv.c.width, canv.c.height, 0, 0.0, 2);
@@ -48,13 +45,13 @@ livesDisplay.appendChild(document.createTextNode("Lives: 0"));
 const scoreDisplay = document.createElement("p");
 scoreDisplay.appendChild(document.createTextNode("Lives: 0"));
 
-let gradient: any;
-
 document?.body.appendChild(canv.c);
 document.body.appendChild(statsHolder);
 statsHolder.appendChild(livesDisplay);
 statsHolder.appendChild(scoreDisplay);
 statsHolder.appendChild(fpsCounter);
+
+
 
 function init() {
 	console.log("hello!");
@@ -160,7 +157,7 @@ function draw() {
 	);
 
 	//@ts-ignore
-	drawAll(canv, (obj) => {
+	gameObjects.draw((obj) => {
 		if (obj.constructor.name == "Enemy") {
 			obj.pos.y += 0.3;
 		}

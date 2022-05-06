@@ -63,7 +63,7 @@ class Enemy extends GameObject {
 		);
 		this.texture.draw();
 		// ++this.interval also returns the value while incrementing
-		for (const obj of gameObjects) {
+		for (const obj of gameObjects.array) {
 			if (obj.constructor.name == "Bullet") {
 				if (
 					obj.collider.intersects(this.collider) &&
