@@ -18,6 +18,9 @@ import {
 import Player from "./Player";
 // import Background from "./Bg";
 import { GradientRect } from "./WebGL/Shapes";
+import Background from "./Bg";
+import { Enemy } from "./Enemy";
+import { Colors } from "./WebGL/Types";
 
 const canv = new Canvas(480, 854);
 
@@ -77,31 +80,24 @@ function init() {
 			shaders.gradient.addUniformLoc("uProjectionMatrix");
 			shaders.gradient.addUniformLoc("uStart");
 			shaders.gradient.addUniformLoc("uEnd");
+			shaders.gradient.addUniformLoc("time");
 
 			const { gl } = canv;
 			gl?.enable(gl?.BLEND);
 			gl?.blendFunc(gl?.SRC_ALPHA, gl?.ONE_MINUS_SRC_ALPHA);
-			gradient = new GradientRect(
-				{ x: 1, y: 1 },
-				{ x: 30, y: 30 },
-				canv,
-				{ r: 1, g: 1, b: 1, a: 1 },
-				{ r: 0, g: 0, b: 0, a: 1 },
-				shaders.gradient
+			gameObjects.push(
+				new Background(
+					Colors.fromRGB(54, 0, 52),
+					Colors.fromRGB(54, 25, 0),
+					canv,
+					shaders.gradient,
+				),
 			);
-			// gameObjects.push(
-			// 	new Background(
-			// 		{ r: 0, g: 0, b: 0, a: 1 },
-			// 		{ r: 1, g: 1, b: 1, a: 1 },
-			// 		canv,
-			// 		shaders.gradient,
-			// 	),
-			// );
 
-			// gameObjects.push(
-			// 	new Enemy({ x: 100, y: 100 }, 0, canv, shaders.basic),
-			// 	new Enemy({ x: 300, y: 100 }, 0, canv, shaders.basic),
-			// );
+			gameObjects.push(
+				new Enemy({ x: 100, y: 100 }, 0, canv, shaders.basic),
+				new Enemy({ x: 300, y: 100 }, 0, canv, shaders.basic),
+			);
 			const play = new Player(shaders.basic, canv);
 			gameObjects.push(play);
 			setPlayer(play);
@@ -123,6 +119,8 @@ function update(delta: DOMHighResTimeStamp) {
 	fpsCounter.innerText = fps.toString() + " FPS";
 	livesDisplay.innerText = `Lives: ${player?.lives}`;
 	scoreDisplay.innerText = `Score: ${calcScore()}`;
+	shaders.gradient.bind();
+	canv.gl.uniform1f(shaders.gradient.programInfo.uniformLocations.time, delta/10);
 	draw();
 	window.requestAnimationFrame(update);
 }
@@ -168,8 +166,6 @@ function draw() {
 		}
 
 	});
-
-	gradient.draw();
 }
 
 window.onload = init;

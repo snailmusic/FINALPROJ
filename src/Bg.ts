@@ -12,7 +12,8 @@ export default class Background extends GameObject {
 	start: Color;
 	end: Color;
 	constructor(start:Color, end:Color, canvas:Canvas, shader:Shader) {
-		super({x:0, y:0},{x:canvas.c.width, y:canvas.c.height} )
+		super({x:-100000, y:-100000},{x:0, y:0} )
+		this.cullable = false;
 		this.canvas = canvas;
 		this.shader = shader;
 		this.start = start;
@@ -30,6 +31,7 @@ export default class Background extends GameObject {
 	draw(): void {
 		const model = mat4.create();
 		const { gl } = this.canvas;
+		this.shader.bind();
 		const programInfo = this.shader.programInfo;
 		gl?.uniformMatrix4fv(
 			programInfo?.uniformLocations.uModelMatrix,
