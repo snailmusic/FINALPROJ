@@ -92,7 +92,7 @@ function init() {
 			);
 
 			gameObjects.push(
-				new Enemy({ x: 100, y: 100 }, 0, canv, shaders.basic),
+				new Enemy({ x: 100, y: 0 }, 2, canv, shaders.basic),
 				new Enemy({ x: 300, y: 100 }, 0, canv, shaders.basic),
 			);
 			const play = new Player(shaders.basic, canv);

@@ -3,7 +3,7 @@ import GameObject from "./GameObject";
 import Canvas from "./WebGL/Canvas";
 import Shader from "./WebGL/Shader";
 import { TextureRect } from "./WebGL/Shapes";
-import { curkeys, mousePos } from "./WebGL/Events";
+import { curkeys, mouseButton, mousePos } from "./WebGL/Events";
 import { gameObjects } from "./Global";
 import Bullet from "./Bullet";
 
@@ -43,7 +43,7 @@ export default class Player extends GameObject {
 
 		// this.pos = mousePos;    
 
-		if (curkeys[32] && !this.justPressed) {
+		if ((curkeys[32] || mouseButton[0]) && !this.justPressed) {
 			this.justPressed = true;   
 			gameObjects.push(
 				new Bullet(
@@ -55,7 +55,7 @@ export default class Player extends GameObject {
 				),
 			);
 		}
-		if (!curkeys[32]) {
+		if (!(curkeys[32] || mouseButton[0])) {
 			this.justPressed = false;
 		}
 
