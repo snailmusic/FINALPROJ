@@ -67,8 +67,7 @@ export default class GameObjectQueue {
 		for (const param of args) {
 			if (this.buffer) {
 				this.gameObjects1.push(param);
-			}
-			else {
+			} else {
 				this.gameObjects2.push(param);
 			}
 		}
@@ -80,6 +79,14 @@ export default class GameObjectQueue {
 		}
 		else {
 			return this.gameObjects2;
+		}
+	}
+
+	clear(){
+		if (this.buffer) {
+			this.gameObjects1.length = 0;
+		} else {
+			this.gameObjects2.length = 0;
 		}
 	}
 }

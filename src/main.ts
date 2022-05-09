@@ -13,12 +13,15 @@ import {
 	player,
 	audioClips,
 	calcScore,
+	gameState,
+	GameState,
 } from "./Global";
 import Player from "./Player";
 // import Background from "./Bg";
 import Background from "./Bg";
 import { Enemy } from "./Enemy";
 import { Colors } from "./WebGL/Types";
+import { ImageObj } from "./Image";
 
 
 const projMat = mat4.create();
@@ -82,22 +85,8 @@ function init() {
 			const { gl } = canv;
 			gl?.enable(gl?.BLEND);
 			gl?.blendFunc(gl?.SRC_ALPHA, gl?.ONE_MINUS_SRC_ALPHA);
-			gameObjects.push(
-				new Background(
-					Colors.fromRGB(54, 0, 52),
-					Colors.fromRGB(54, 25, 0),
-					canv,
-					shaders.gradient,
-				),
-			);
-
-			gameObjects.push(
-				new Enemy({ x: 100, y: 0 }, 2, canv, shaders.basic),
-				new Enemy({ x: 300, y: 100 }, 0, canv, shaders.basic),
-			);
-			const play = new Player(shaders.basic, canv);
-			gameObjects.push(play);
-			setPlayer(play);
+			// 
+			
 
 			window.requestAnimationFrame(update);
 		})
@@ -106,10 +95,60 @@ function init() {
 
 let prev = 0;
 
+let gameStatePrev = Infinity;
+
 function update(delta: DOMHighResTimeStamp) {
 	const fps = Math.round(1000 / (delta - prev));
 	setDelta(delta - prev);
 	prev = delta;
+
+	if (gameState != gameStatePrev) {
+		gameStatePrev = gameState;
+		gameObjects.clear();
+
+		switch (gameState) {
+			case GameState.Menu:
+				gameObjects.push(
+					new Background(
+						Colors.fromRGB(134, 255, 252),
+						Colors.fromRGB(255, 138, 222),
+						canv,
+						shaders.gradient,
+					),
+					new ImageObj(
+						{ x: 0, y: 0 },
+						{ x: canv.c.width, y: canv.c.height },
+						"images/Main Menu.png",
+						canv,
+						shaders.basic,
+					),
+				);
+				break;
+			
+			case GameState.Game:
+				gameObjects.push(
+					new Background(
+						Colors.fromRGB(54, 0, 52),
+						Colors.fromRGB(54, 25, 0),
+						canv,
+						shaders.gradient,
+					),
+				);
+
+				gameObjects.push(
+					// new Enemy({ x: 100, y: 0 }, 2, canv, shaders.basic),
+					new Enemy({ x: 300, y: 100 }, 0, canv, shaders.basic),
+				);
+				const play = new Player(shaders.basic, canv);
+				gameObjects.push(play);
+				setPlayer(play);
+				break;
+		
+			default:
+				alert("uh oh there was a big mess up")
+				break;
+		}
+	}
 
 	audioClips.bg.play().catch(()=>{});
 
