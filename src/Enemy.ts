@@ -131,9 +131,10 @@ class Enemy extends GameObject {
 
 	radialBullet() {
 		for (const i of range(0, 7)) {
+			let coolI = i + 0.4;
 			const relPos: Vec2 = {
-				x: Math.sin((i * Math.PI) / 4) * 32,
-				y: Math.cos((i * Math.PI) / 4) * 32,
+				x: Math.sin((coolI * Math.PI) / 4) * 32,
+				y: Math.cos((coolI * Math.PI) / 4) * 32,
 			};
 			const centerPos = {
 				x: this.pos.x + 32,
