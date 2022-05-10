@@ -15,6 +15,7 @@ import {
 	calcScore,
 	gameState,
 	GameState,
+	setState,
 } from "./Global";
 import Player from "./Player";
 // import Background from "./Bg";
@@ -22,6 +23,8 @@ import Background from "./Bg";
 import { Enemy } from "./Enemy";
 import { Colors } from "./WebGL/Types";
 import { ImageObj } from "./Image";
+import { curkeys } from "./WebGL/Events";
+import { randInt } from "./Helpers";
 
 
 const projMat = mat4.create();
@@ -47,11 +50,14 @@ const livesDisplay = document.createElement("p");
 livesDisplay.appendChild(document.createTextNode("Lives: 0"));
 const scoreDisplay = document.createElement("p");
 scoreDisplay.appendChild(document.createTextNode("Lives: 0"));
+const diffDisplay = document.createElement("p");
+diffDisplay.appendChild(document.createTextNode("Lives: 0"));
 
 document?.body.appendChild(canv.c);
 document.body.appendChild(statsHolder);
 statsHolder.appendChild(livesDisplay);
 statsHolder.appendChild(scoreDisplay);
+statsHolder.appendChild(diffDisplay);
 statsHolder.appendChild(fpsCounter);
 
 
@@ -150,11 +156,20 @@ function update(delta: DOMHighResTimeStamp) {
 		}
 	}
 
+	if (curkeys[13] && gameState == GameState.Menu) {
+		setState(GameState.Game);
+	}
+
+	if (gameState == GameState.Game) {
+		generateEnemy();
+	}
+
 	audioClips.bg.play().catch(()=>{});
 
 	fpsCounter.innerText = fps.toString() + " FPS";
 	livesDisplay.innerText = `Lives: ${player?.lives}`;
 	scoreDisplay.innerText = `Score: ${calcScore()}`;
+	diffDisplay.innerText = `Difficulty: ${resetTime/10}`
 	shaders.gradient.bind();
 	canv.gl.uniform1f(shaders.gradient.programInfo.uniformLocations.time, delta/10);
 	draw();
@@ -202,6 +217,25 @@ function draw() {
 		}
 
 	});
+}
+
+let counter = 0;
+let resetTime = 0;
+
+function generateEnemy() {
+	// scales it so it breaks at 70 and not 30
+	// (1/700^0.6)*300
+	const scalingFactor = 5.889283;
+	const coolTime = Math.pow(resetTime, 0.6)*scalingFactor;
+	console.log(coolTime);
+	
+	if (++counter >= 300 - coolTime) {
+		counter= 0;
+		resetTime += 10;
+		gameObjects.push(
+			new Enemy({x:randInt(32,480-32), y:-15}, randInt(0,3), canv, shaders.basic)
+		);
+	}
 }
 
 window.onload = init;
