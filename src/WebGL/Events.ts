@@ -28,12 +28,14 @@ window.addEventListener("mouseup", (e) =>{
 })
 
 window.addEventListener("touchmove", (e)=>{
+	const cav:HTMLElement = document.getElementsByTagName("canvas")[0];
 	let maintouch = e.changedTouches[0];
 	mousePos.x = maintouch.clientX - cav.offsetLeft;
 	mousePos.y = maintouch.clientY - cav.offsetTop;
 })
 
 window.addEventListener("touchstart", (e)=>{
+	const cav:HTMLElement = document.getElementsByTagName("canvas")[0];
 	mouseButton[0] = true;
 	let maintouch = e.changedTouches[0];
 	mousePos.x = maintouch.clientX - cav.offsetLeft;
