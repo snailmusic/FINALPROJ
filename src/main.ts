@@ -23,7 +23,7 @@ import Background from "./Bg";
 import { Enemy } from "./Enemy";
 import { Colors } from "./WebGL/Types";
 import { ImageObj } from "./Image";
-import { curkeys } from "./WebGL/Events";
+import { curkeys, mouseButton } from "./WebGL/Events";
 import { randInt } from "./Helpers";
 import { Boss } from "./Boss";
 
@@ -182,7 +182,7 @@ function update(delta: DOMHighResTimeStamp) {
 		}
 	}
 
-	if (curkeys[13] && gameState == GameState.Menu) {
+	if ((curkeys[13] || mouseButton[0]) && gameState == GameState.Menu) {
 		setState(GameState.Game);
 	}
 
