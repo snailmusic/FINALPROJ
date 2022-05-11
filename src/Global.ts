@@ -41,6 +41,7 @@ const gameObjects = new GameObjectQueue(canv);
 enum GameState {
 	Menu,
 	Game,
+	Boss,
 }
 let gameState: GameState = GameState.Menu;
 

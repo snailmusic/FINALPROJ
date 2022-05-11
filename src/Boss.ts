@@ -6,15 +6,14 @@ import Shader from "./WebGL/Shader";
 import { TextureRect } from "./WebGL/Shapes";
 import { Vec2 } from "./WebGL/Types";
 import { audioClips, gameObjects, killEnemy, player, range } from "./Global";
-import { randInt } from "./Helpers";
 
 enum PatternType {
-	Spiral,
-	Radial,
-	Focused,
+	Spiral = 0b1,
+	Radial = 0b10,
+	Focused = 0b100,
 }
 
-class Enemy extends GameObject {
+class Boss extends GameObject {
 	type: PatternType;
 	canvas: Canvas;
 	shader: Shader;
@@ -25,9 +24,10 @@ class Enemy extends GameObject {
 	lives: number;
 	speed: number;
 	sickoMode: boolean;
-	constructor(pos: Vec2, type: PatternType, canvas: Canvas, shader: Shader) {
-		super(pos, { x: 64, y: 64 });
-		this.type = type;
+	phase: number;
+	constructor(pos: Vec2, canvas: Canvas, shader: Shader) {
+		super(pos, { x: 128, y: 128 });
+		this.type = PatternType.Spiral;
 		this.canvas = canvas;
 		this.shader = shader;
 		this.bullets = [];
@@ -35,14 +35,15 @@ class Enemy extends GameObject {
 			{ x: 0, y: 0 },
 			this.size,
 			canvas,
-			"images/enemy.png",
+			"images/Boss.png",
 			shader,
 		);
 		this.interval = 0;
 		this.counter = 0;
 
-		this.lives = randInt(2,7);
+		this.lives = 20;
 		this.speed = 20;
+		this.phase = 0;
 
 		this.sickoMode = false;
 
@@ -80,27 +81,39 @@ class Enemy extends GameObject {
 			}
 		}
 		if (this.lives <= 0) {
-			this.toKeep = false;
-			killEnemy();
+			// this.toKeep = false;
+			// killEnemy();
+			this.phase++;
+			switch (this.phase) {
+				case 1:
+					this.lives = 8;
+					this.sickoMode = true;
+					break;
+
+				case 2:
+					this.lives = 10;
+					this.sickoMode = false;
+					this.type = PatternType.Focused | PatternType.Spiral;
+					break;
+			
+				default:
+					killEnemy();
+					this.toKeep = false;
+					break;
+			}
 		}
 
-		this.speed = this.sickoMode ? 1:20;
+		this.speed = this.sickoMode ? 8 : 20;
 
 		if (++this.interval >= this.speed) {
-			switch (this.type) {
-				case PatternType.Focused:
-					this.focusedBullet();
-					break;
-
-				case PatternType.Radial:
-					this.radialBullet();
-					break;
-
-				case PatternType.Spiral:
-					this.spiralBullet();
-
-				default:
-					break;
+			if ((this.type & PatternType.Focused) > 0) {
+				this.focusedBullet();
+			}
+			if ((this.type & PatternType.Spiral) > 0) {
+				this.spiralBullet();
+			}
+			if ((this.type & PatternType.Radial) > 0) {
+				this.radialBullet();
 			}
 			this.interval = 0;
 		}
@@ -109,12 +122,12 @@ class Enemy extends GameObject {
 		this.counter++;
 		for (const i of range(0, 7)) {
 			const relPos: Vec2 = {
-				x: Math.sin((i * Math.PI) / 4 - this.counter) * 32,
-				y: Math.cos((i * Math.PI) / 4 - this.counter) * 32,
+				x: Math.sin((i * Math.PI) / 4 - this.counter) * 64,
+				y: Math.cos((i * Math.PI) / 4 - this.counter) * 64,
 			};
 			const centerPos = {
-				x: this.pos.x + 32,
-				y: this.pos.y + 32,
+				x: this.pos.x + 64,
+				y: this.pos.y + 64,
 			};
 			gameObjects.push(
 				new Bullet(
@@ -134,12 +147,12 @@ class Enemy extends GameObject {
 		for (const i of range(0, 7)) {
 			let coolI = i + 0.4;
 			const relPos: Vec2 = {
-				x: Math.sin((coolI * Math.PI) / 4) * 32,
-				y: Math.cos((coolI * Math.PI) / 4) * 32,
+				x: Math.sin((coolI * Math.PI) / 4) * 64,
+				y: Math.cos((coolI * Math.PI) / 4) * 64,
 			};
 			const centerPos = {
-				x: this.pos.x + 32,
-				y: this.pos.y + 32,
+				x: this.pos.x + 64,
+				y: this.pos.y + 64,
 			};
 			gameObjects.push(
 				new Bullet(
@@ -157,23 +170,25 @@ class Enemy extends GameObject {
 
 	focusedBullet() {
 		const relPos: Vec2 = {
-			x: (player?.pos.x || 0) - this.pos.x - 32,
-			y: (player?.pos.y || 0) - this.pos.y - 32,
+			x: (player?.pos.x || 0) - this.pos.x - 64,
+			y: (player?.pos.y || 0) - this.pos.y - 64,
 		};
 		let angleToPlayer = Math.atan(relPos.y / relPos.x);
 		// t2=\pi\ -t1*-1
 		if (relPos.x < 0) {
 			angleToPlayer += Math.PI;
 		}
-		gameObjects.push(
-			new Bullet(
-				{ x: this.pos.x + 32, y: this.pos.y + 32 },
+		const bulet = new Bullet(
+				{ x: this.pos.x + 64, y: this.pos.y + 64 },
 				this.canvas,
 				this.shader,
 				angleToPlayer,
-			),
+			)
+		bulet.speed = 0.5;
+		gameObjects.push(
+			bulet
 		);
 	}
 }
 
-export { Enemy, type PatternType };
+export { Boss, type PatternType };

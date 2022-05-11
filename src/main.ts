@@ -25,6 +25,7 @@ import { Colors } from "./WebGL/Types";
 import { ImageObj } from "./Image";
 import { curkeys } from "./WebGL/Events";
 import { randInt } from "./Helpers";
+import { Boss } from "./Boss";
 
 
 const projMat = mat4.create();
@@ -149,7 +150,32 @@ function update(delta: DOMHighResTimeStamp) {
 				gameObjects.push(play);
 				setPlayer(play);
 				break;
-		
+			
+			case GameState.Boss:
+
+				gameObjects.push(
+					new Background(
+						Colors.fromRGB(80, 0, 0),
+						Colors.fromRGB(0, 0, 0),
+						canv,
+						shaders.gradient,
+					),
+					new Boss(
+						{
+							x: canv.c.width / 2,
+							y: 70,
+						},
+						canv,
+						shaders.basic,
+					),
+				);
+
+				if (player != undefined) {
+					player.lives = 10;
+					gameObjects.push(player);
+				}
+				break;
+
 			default:
 				alert("uh oh there was a big mess up")
 				break;
@@ -162,6 +188,9 @@ function update(delta: DOMHighResTimeStamp) {
 
 	if (gameState == GameState.Game) {
 		generateEnemy();
+		if (resetTime >= 400) {
+			setState(GameState.Boss);
+		}
 	}
 
 	audioClips.bg.play().catch(()=>{});
@@ -220,14 +249,18 @@ function draw() {
 }
 
 let counter = 0;
-let resetTime = 0;
+let resetTime = 390;
 
 function generateEnemy() {
 	// scales it so it breaks at 70 and not 30
 	// (1/700^0.6)*300
 	const scalingFactor = 5.889283;
-	const coolTime = Math.pow(resetTime, 0.6)*scalingFactor;
-	console.log(coolTime);
+	const coolTime = Math.min(Math.pow(resetTime, 0.6)*scalingFactor, 270);
+	// console.log(coolTime);
+
+	if (resetTime >= 400) {
+		return;
+	}
 	
 	if (++counter >= 300 - coolTime) {
 		counter= 0;
