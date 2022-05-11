@@ -29,15 +29,15 @@ window.addEventListener("mouseup", (e) =>{
 
 window.addEventListener("touchmove", (e)=>{
 	let maintouch = e.changedTouches[0];
-	mousePos.x = maintouch.clientX;
-	mousePos.y = maintouch.clientY;
+	mousePos.x = maintouch.clientX - cav.offsetLeft;
+	mousePos.y = maintouch.clientY - cav.offsetTop;
 })
 
 window.addEventListener("touchstart", (e)=>{
 	mouseButton[0] = true;
 	let maintouch = e.changedTouches[0];
-	mousePos.x = maintouch.clientX;
-	mousePos.y = maintouch.clientY;
+	mousePos.x = maintouch.clientX - cav.offsetLeft;
+	mousePos.y = maintouch.clientY - cav.offsetTop;
 })
 
 window.addEventListener("touchend", (_)=>{
