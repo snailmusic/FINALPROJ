@@ -21,7 +21,7 @@ import Player from "./Player";
 // import Background from "./Bg";
 import Background from "./Bg";
 import { Enemy } from "./Enemy";
-import { Colors } from "./WebGL/Types";
+import { Colors } from "./WebGL/Colors";
 import { ImageObj } from "./Image";
 import { curkeys, mouseButton } from "./WebGL/Events";
 import { randInt } from "./Helpers";
@@ -109,6 +109,10 @@ function update(delta: DOMHighResTimeStamp) {
 	setDelta(delta - prev);
 	prev = delta;
 
+	if (gameState != GameState.Menu && gameState != GameState.Death && player?.lives == 0) {
+		setState(GameState.Death);
+	}
+
 	if (gameState != gameStatePrev) {
 		gameStatePrev = gameState;
 		gameObjects.clear();
@@ -175,6 +179,19 @@ function update(delta: DOMHighResTimeStamp) {
 					gameObjects.push(player);
 				}
 				break;
+			
+			case GameState.Death:
+				alert("you suck :)");
+				gameObjects.push(
+					new Background(
+						Colors.cyan,
+						Colors.pink,
+						canv,
+						shaders.gradient
+					),
+					new ImageObj({x:0, y:0}, {x:canv.c.width, y:canv.c.height}, "images/Death.png", canv, shaders.basic)
+				)
+				break;
 
 			default:
 				alert("uh oh there was a big mess up")
@@ -193,10 +210,19 @@ function update(delta: DOMHighResTimeStamp) {
 		}
 	}
 
+	if ((curkeys[13] || mouseButton[0]) && gameState == GameState.Death) {
+		if (player != undefined) {
+			player.lives = 10;
+		}
+		resetTime = 0;
+		counter = 0;
+		setState(GameState.Game)
+	}
+
 	audioClips.bg.play().catch(()=>{});
 
 	fpsCounter.innerText = fps.toString() + " FPS";
-	livesDisplay.innerText = `Lives: ${player?.lives}`;
+	livesDisplay.innerText = `Lives: ${player?.lives || 0}`;
 	scoreDisplay.innerText = `Score: ${calcScore()}`;
 	diffDisplay.innerText = `Difficulty: ${resetTime/10}`
 	shaders.gradient.bind();
@@ -249,7 +275,7 @@ function draw() {
 }
 
 let counter = 0;
-let resetTime = 390;
+let resetTime = 0;
 
 function generateEnemy() {
 	// scales it so it breaks at 70 and not 30

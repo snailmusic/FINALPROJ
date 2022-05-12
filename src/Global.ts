@@ -42,6 +42,7 @@ enum GameState {
 	Menu,
 	Game,
 	Boss,
+	Death,
 }
 let gameState: GameState = GameState.Menu;
 

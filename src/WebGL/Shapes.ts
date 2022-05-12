@@ -1,4 +1,5 @@
-import {Vec2, Color, Colors} from "./Types";
+import {Vec2, Color} from "./Types";
+import { Colors } from "./Colors";
 import Shader from "./Shader";
 import { VertexBuffer, IndexBuffer } from "./Buffers";
 import Texture from "./Texture";

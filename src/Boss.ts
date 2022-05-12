@@ -18,24 +18,34 @@ class Boss extends GameObject {
 	canvas: Canvas;
 	shader: Shader;
 	bullets: Bullet[];
-	texture: TextureRect;
 	interval: number;
 	counter: number;
 	lives: number;
 	speed: number;
 	sickoMode: boolean;
 	phase: number;
+	dx: number;
+	texture1: TextureRect;
+	texture2: TextureRect;
+	textDrawn: boolean;
 	constructor(pos: Vec2, canvas: Canvas, shader: Shader) {
 		super(pos, { x: 128, y: 128 });
 		this.type = PatternType.Spiral;
 		this.canvas = canvas;
 		this.shader = shader;
 		this.bullets = [];
-		this.texture = new TextureRect(
+		this.texture1 = new TextureRect(
 			{ x: 0, y: 0 },
 			this.size,
 			canvas,
 			"images/Boss.png",
+			shader,
+		);
+		this.texture2 = new TextureRect(
+			{ x: 0, y: 0 },
+			this.size,
+			canvas,
+			"images/BossInv.png",
 			shader,
 		);
 		this.interval = 0;
@@ -43,9 +53,12 @@ class Boss extends GameObject {
 
 		this.lives = 20;
 		this.speed = 20;
-		this.phase = 0;
+		this.phase = 4;
+
+		this.textDrawn = false;
 
 		this.sickoMode = false;
+		this.dx = 3;
 
 		// if (type == PatternType.Focused) {
 		// 	this.speed = 10;
@@ -63,7 +76,12 @@ class Boss extends GameObject {
 			false,
 			model,
 		);
-		this.texture.draw();
+		if (!this.sickoMode) {
+			this.texture1.draw();
+		}
+		else {
+			this.texture2.draw();
+		}
 		// ++this.interval also returns the value while incrementing
 		for (const obj of gameObjects.array) {
 			if (obj.constructor.name == "Bullet") {
@@ -95,7 +113,25 @@ class Boss extends GameObject {
 					this.sickoMode = false;
 					this.type = PatternType.Focused | PatternType.Spiral;
 					break;
-			
+
+				case 3:
+					this.lives = 6;
+					this.sickoMode = true;
+					this.type = PatternType.Focused | PatternType.Spiral;
+					break;
+
+				case 4:
+					this.lives = 15;
+					this.sickoMode = false;
+					this.type = PatternType.Radial;
+					break;
+
+				case 5:
+					this.lives = 7;
+					this.sickoMode = true;
+					this.type = PatternType.Spiral;
+					break;
+
 				default:
 					killEnemy();
 					this.toKeep = false;
@@ -104,6 +140,7 @@ class Boss extends GameObject {
 		}
 
 		this.speed = this.sickoMode ? 8 : 20;
+
 
 		if (++this.interval >= this.speed) {
 			if ((this.type & PatternType.Focused) > 0) {
@@ -116,6 +153,17 @@ class Boss extends GameObject {
 				this.radialBullet();
 			}
 			this.interval = 0;
+		}
+
+		if (this.phase == 4 || this.phase == 5) {
+			this.pos.x += this.dx;
+			if (this.pos.x > this.canvas.c.width - 32) {
+				this.dx *= -1;
+			}
+
+			if (this.pos.x < 32) {
+				this.dx *= -1;
+			}
 		}
 	}
 	spiralBullet() {
