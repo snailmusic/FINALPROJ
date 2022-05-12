@@ -205,7 +205,7 @@ function update(delta: DOMHighResTimeStamp) {
 
 	if (gameState == GameState.Game) {
 		generateEnemy();
-		if (resetTime >= 400) {
+		if (resetTime >= 400 && enemyCount == 0) {
 			setState(GameState.Boss);
 		}
 	}
@@ -264,16 +264,17 @@ function draw() {
 		false,
 		projMat,
 	);
-
+	enemyCount = 0;
 	//@ts-ignore
 	gameObjects.draw((obj) => {
 		if (obj.constructor.name == "Enemy") {
 			obj.pos.y += 0.3;
+			enemyCount++;
 		}
 
 	});
 }
-
+let enemyCount = 0;
 let counter = 0;
 let resetTime = 0;
 
