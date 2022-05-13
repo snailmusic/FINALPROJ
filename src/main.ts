@@ -1,7 +1,6 @@
 import "./dark.css";
 import "./style.css";
 import { mat4 } from "gl-matrix-ts";
-
 import Shader from "./WebGL/Shader";
 // import { Enemy } from "./Enemy";
 // import GameObject from "./GameObject";

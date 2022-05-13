@@ -53,7 +53,7 @@ class Boss extends GameObject {
 
 		this.lives = 20;
 		this.speed = 20;
-		this.phase = 4;
+		this.phase = 0;
 
 		this.textDrawn = false;
 
@@ -133,6 +133,7 @@ class Boss extends GameObject {
 					break;
 
 				default:
+					this.winPoints();
 					killEnemy();
 					this.toKeep = false;
 					break;
@@ -237,6 +238,13 @@ class Boss extends GameObject {
 			bulet
 		);
 	}
+
+	winPoints() {
+		for (const i of range(0,100)) {
+			killEnemy();
+		}
+	}
 }
 
 export { Boss, type PatternType };
+
