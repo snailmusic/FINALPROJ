@@ -240,7 +240,7 @@ class Boss extends GameObject {
 	}
 
 	winPoints() {
-		for (const i of range(0,100)) {
+		for (const _ of range(0,100)) {
 			killEnemy();
 		}
 	}
