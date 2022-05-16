@@ -267,7 +267,10 @@ function draw() {
 	//@ts-ignore
 	gameObjects.draw((obj) => {
 		if (obj.constructor.name == "Enemy") {
-			obj.pos.y += 0.3;
+			obj.pos.y += 0.5;
+			if (obj.pos.y > canv.c.height) {
+				obj.toKeep = false;
+			}
 			enemyCount++;
 		}
 

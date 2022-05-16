@@ -4,8 +4,9 @@ import Canvas from "./WebGL/Canvas";
 import Shader from "./WebGL/Shader";
 import { TextureRect } from "./WebGL/Shapes";
 import { curkeys, mouseButton, mousePos } from "./WebGL/Events";
-import { gameObjects } from "./Global";
+import { canv, gameObjects } from "./Global";
 import Bullet from "./Bullet";
+import { clamp } from "./Helpers";
 
 export default class Player extends GameObject {
 	shader: Shader;
@@ -33,6 +34,9 @@ export default class Player extends GameObject {
 		const { gl } = this.canvas;
 		const programInfo = this.shader.programInfo;
 		this.shader.bind();
+		this.pos = {...mousePos};
+		this.pos.x = clamp(this.pos.x, 0, canv.c.width);
+		this.pos.y = clamp(this.pos.y, 0, canv.c.height);
 		mat4.translate(model, model, [this.pos.x, this.pos.y, 0]);
 		gl?.uniformMatrix4fv(
 			programInfo?.uniformLocations.uModelMatrix,
@@ -74,9 +78,9 @@ export default class Player extends GameObject {
 			}
 		}
 
-		if (this.lives == 0) {
-			console.log("lol sorry");
+		// if (this.lives == 0) {
+		// 	console.log("lol sorry");
 			
-		}
+		// }
 	}
 }

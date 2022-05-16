@@ -13,6 +13,8 @@ export default class Bullet extends GameObject {
   shader: Shader;
   owner: string;
   speed: number;
+  dx: number;
+  dy: number;
   constructor(pos: Vec2, canvas: Canvas, shader: Shader, angle: number, owner?: string) {
     const size: Vec2 = { x: 16, y: 16 };
     super({x:pos.x - 8, y:pos.y - 8}, size);
@@ -30,6 +32,8 @@ export default class Bullet extends GameObject {
 
     this.owner = owner || "other";
     this.speed = 0.2;
+    this.dx = Math.cos(this.angle);
+    this.dy = Math.sin(this.angle);
 
 
     // console.log(currentDelta);
@@ -40,8 +44,8 @@ export default class Bullet extends GameObject {
     const { gl } = this.canvas;
     const programInfo = this.shader.programInfo;
 		this.shader.bind();
-    this.pos.x += Math.cos(this.angle) * this.speed * currentDelta;
-    this.pos.y += Math.sin(this.angle) * this.speed * currentDelta;
+    this.pos.x += this.dx * this.speed * currentDelta;
+    this.pos.y += this.dy * this.speed * currentDelta;
     const model = mat4.create();
 
     mat4.translate(model, model, [this.pos.x, this.pos.y, 0]);
