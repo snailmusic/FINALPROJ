@@ -16,8 +16,9 @@ window.addEventListener("keyup", (e) => {
 	curkeys[Number(e.keyCode)] = false;
 });
 window.addEventListener("mousemove", (e)=>{
-	mousePos.x = e.clientX;
-	mousePos.y = e.clientY;
+	const cav:HTMLElement = document.getElementsByTagName("canvas")[0];
+	mousePos.x = e.clientX - cav.offsetLeft;
+	mousePos.y = e.clientY - cav.offsetTop;
 })
 window.addEventListener("mousedown", (e) =>{
 	mouseButton[e.button] = true;
@@ -27,16 +28,18 @@ window.addEventListener("mouseup", (e) =>{
 })
 
 window.addEventListener("touchmove", (e)=>{
+	const cav:HTMLElement = document.getElementsByTagName("canvas")[0];
 	let maintouch = e.changedTouches[0];
-	mousePos.x = maintouch.clientX;
-	mousePos.y = maintouch.clientY;
+	mousePos.x = maintouch.clientX - cav.offsetLeft;
+	mousePos.y = maintouch.clientY - cav.offsetTop;
 })
 
 window.addEventListener("touchstart", (e)=>{
+	const cav:HTMLElement = document.getElementsByTagName("canvas")[0];
 	mouseButton[0] = true;
 	let maintouch = e.changedTouches[0];
-	mousePos.x = maintouch.clientX;
-	mousePos.y = maintouch.clientY;
+	mousePos.x = maintouch.clientX - cav.offsetLeft;
+	mousePos.y = maintouch.clientY - cav.offsetTop;
 })
 
 window.addEventListener("touchend", (_)=>{

@@ -6,45 +6,59 @@ import Shader from "./WebGL/Shader";
 import { TextureRect } from "./WebGL/Shapes";
 import { Vec2 } from "./WebGL/Types";
 import { audioClips, gameObjects, killEnemy, player, range } from "./Global";
-import { randInt } from "./Helpers";
 
 enum PatternType {
-	Spiral,
-	Radial,
-	Focused,
+	Spiral = 0b1,
+	Radial = 0b10,
+	Focused = 0b100,
 }
 
-class Enemy extends GameObject {
+class Boss extends GameObject {
 	type: PatternType;
 	canvas: Canvas;
 	shader: Shader;
 	bullets: Bullet[];
-	texture: TextureRect;
 	interval: number;
 	counter: number;
 	lives: number;
 	speed: number;
 	sickoMode: boolean;
-	constructor(pos: Vec2, type: PatternType, canvas: Canvas, shader: Shader) {
-		super(pos, { x: 64, y: 64 });
-		this.type = type;
+	phase: number;
+	dx: number;
+	texture1: TextureRect;
+	texture2: TextureRect;
+	textDrawn: boolean;
+	constructor(pos: Vec2, canvas: Canvas, shader: Shader) {
+		super(pos, { x: 128, y: 128 });
+		this.type = PatternType.Spiral;
 		this.canvas = canvas;
 		this.shader = shader;
 		this.bullets = [];
-		this.texture = new TextureRect(
+		this.texture1 = new TextureRect(
 			{ x: 0, y: 0 },
 			this.size,
 			canvas,
-			"images/enemy.png",
+			"images/Boss.png",
+			shader,
+		);
+		this.texture2 = new TextureRect(
+			{ x: 0, y: 0 },
+			this.size,
+			canvas,
+			"images/BossInv.png",
 			shader,
 		);
 		this.interval = 0;
 		this.counter = 0;
 
-		this.lives = randInt(2,7);
+		this.lives = 20;
 		this.speed = 20;
+		this.phase = 0;
+
+		this.textDrawn = false;
 
 		this.sickoMode = false;
+		this.dx = 3;
 
 		// if (type == PatternType.Focused) {
 		// 	this.speed = 10;
@@ -62,7 +76,12 @@ class Enemy extends GameObject {
 			false,
 			model,
 		);
-		this.texture.draw();
+		if (!this.sickoMode) {
+			this.texture1.draw();
+		}
+		else {
+			this.texture2.draw();
+		}
 		// ++this.interval also returns the value while incrementing
 		for (const obj of gameObjects.array) {
 			if (obj.constructor.name == "Bullet") {
@@ -80,41 +99,84 @@ class Enemy extends GameObject {
 			}
 		}
 		if (this.lives <= 0) {
-			this.toKeep = false;
-			killEnemy();
-		}
-
-		this.speed = this.sickoMode ? 1:20;
-
-		if (++this.interval >= this.speed) {
-			switch (this.type) {
-				case PatternType.Focused:
-					this.focusedBullet();
+			// this.toKeep = false;
+			// killEnemy();
+			this.phase++;
+			switch (this.phase) {
+				case 1:
+					this.lives = 8;
+					this.sickoMode = true;
 					break;
 
-				case PatternType.Radial:
-					this.radialBullet();
+				case 2:
+					this.lives = 10;
+					this.sickoMode = false;
+					this.type = PatternType.Focused | PatternType.Spiral;
 					break;
 
-				case PatternType.Spiral:
-					this.spiralBullet();
+				case 3:
+					this.lives = 6;
+					this.sickoMode = true;
+					this.type = PatternType.Focused | PatternType.Spiral;
+					break;
+
+				case 4:
+					this.lives = 15;
+					this.sickoMode = false;
+					this.type = PatternType.Radial;
+					break;
+
+				case 5:
+					this.lives = 7;
+					this.sickoMode = true;
+					this.type = PatternType.Spiral;
+					break;
 
 				default:
+					this.winPoints();
+					killEnemy();
+					this.toKeep = false;
 					break;
 			}
+		}
+
+		this.speed = this.sickoMode ? 8 : 20;
+
+
+		if (++this.interval >= this.speed) {
+			if ((this.type & PatternType.Focused) > 0) {
+				this.focusedBullet();
+			}
+			if ((this.type & PatternType.Spiral) > 0) {
+				this.spiralBullet();
+			}
+			if ((this.type & PatternType.Radial) > 0) {
+				this.radialBullet();
+			}
 			this.interval = 0;
+		}
+
+		if (this.phase == 4 || this.phase == 5) {
+			this.pos.x += this.dx;
+			if (this.pos.x > this.canvas.c.width - 32) {
+				this.dx *= -1;
+			}
+
+			if (this.pos.x < 32) {
+				this.dx *= -1;
+			}
 		}
 	}
 	spiralBullet() {
 		this.counter++;
 		for (const i of range(0, 7)) {
 			const relPos: Vec2 = {
-				x: Math.sin((i * Math.PI) / 4 - this.counter) * 32,
-				y: Math.cos((i * Math.PI) / 4 - this.counter) * 32,
+				x: Math.sin((i * Math.PI) / 4 - this.counter) * 64,
+				y: Math.cos((i * Math.PI) / 4 - this.counter) * 64,
 			};
 			const centerPos = {
-				x: this.pos.x + 32,
-				y: this.pos.y + 32,
+				x: this.pos.x + 64,
+				y: this.pos.y + 64,
 			};
 			gameObjects.push(
 				new Bullet(
@@ -134,12 +196,12 @@ class Enemy extends GameObject {
 		for (const i of range(0, 7)) {
 			let coolI = i + 0.4;
 			const relPos: Vec2 = {
-				x: Math.sin((coolI * Math.PI) / 4) * 32,
-				y: Math.cos((coolI * Math.PI) / 4) * 32,
+				x: Math.sin((coolI * Math.PI) / 4) * 64,
+				y: Math.cos((coolI * Math.PI) / 4) * 64,
 			};
 			const centerPos = {
-				x: this.pos.x + 32,
-				y: this.pos.y + 32,
+				x: this.pos.x + 64,
+				y: this.pos.y + 64,
 			};
 			gameObjects.push(
 				new Bullet(
@@ -157,23 +219,32 @@ class Enemy extends GameObject {
 
 	focusedBullet() {
 		const relPos: Vec2 = {
-			x: (player?.pos.x || 0) - this.pos.x - 32,
-			y: (player?.pos.y || 0) - this.pos.y - 32,
+			x: (player?.pos.x || 0) - this.pos.x - 64,
+			y: (player?.pos.y || 0) - this.pos.y - 64,
 		};
 		let angleToPlayer = Math.atan(relPos.y / relPos.x);
 		// t2=\pi\ -t1*-1
 		if (relPos.x < 0) {
 			angleToPlayer += Math.PI;
 		}
-		gameObjects.push(
-			new Bullet(
-				{ x: this.pos.x + 32, y: this.pos.y + 32 },
+		const bulet = new Bullet(
+				{ x: this.pos.x + 64, y: this.pos.y + 64 },
 				this.canvas,
 				this.shader,
 				angleToPlayer,
-			),
+			)
+		bulet.speed = 0.5;
+		gameObjects.push(
+			bulet
 		);
+	}
+
+	winPoints() {
+		for (const _ of range(0,100)) {
+			killEnemy();
+		}
 	}
 }
 
-export { Enemy, type PatternType };
+export { Boss, type PatternType };
+
