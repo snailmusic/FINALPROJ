@@ -107,7 +107,6 @@ function update(delta: DOMHighResTimeStamp) {
 	const fps = Math.round(1000 / (delta - prev));
 	setDelta(delta - prev);
 	prev = delta;
-
 	if (gameState != GameState.Menu && gameState != GameState.Death && player?.lives == 0) {
 		setState(GameState.Death);
 	}
