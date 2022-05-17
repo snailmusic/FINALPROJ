@@ -25,7 +25,6 @@ import { ImageObj } from "./Image";
 import { curkeys, mouseButton } from "./WebGL/Events";
 import { randInt } from "./Helpers";
 import { Boss } from "./Boss";
-import { RainbowRect } from "./WebGL/Shapes";
 import Rainbow from "./Rainbow";
 import Timer from "./Timer";
 
