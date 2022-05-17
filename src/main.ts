@@ -25,6 +25,9 @@ import { ImageObj } from "./Image";
 import { curkeys, mouseButton } from "./WebGL/Events";
 import { randInt } from "./Helpers";
 import { Boss } from "./Boss";
+import { RainbowRect } from "./WebGL/Shapes";
+import Rainbow from "./Rainbow";
+import Timer from "./Timer";
 
 
 const projMat = mat4.create();
@@ -34,10 +37,12 @@ const viewMat = mat4.create();
 interface Shaders {
 	basic: Shader;
 	gradient: Shader;
+	rainbow: Shader;
 }
 const shaders: Shaders = {
 	basic: new Shader(canv),
 	gradient: new Shader(canv),
+	rainbow: new Shader(canv),
 };
 
 const statsHolder = document.createElement("div");
@@ -88,11 +93,21 @@ function init() {
 			shaders.gradient.addUniformLoc("uEnd");
 			shaders.gradient.addUniformLoc("time");
 
+			return Shader.Load("assets/Rainbow.shader");
+		})
+		.then((val) => {
+			shaders.rainbow.initShaderProgram(val.vert, val.frag);
+			shaders.rainbow.addAttribLoc("vertexPosition", "aVertexPosition");
+			shaders.rainbow.addAttribLoc("texPosition", "aTextureCoord");
+			shaders.rainbow.addUniformLoc("uViewMatrix");
+			shaders.rainbow.addUniformLoc("uModelMatrix");
+			shaders.rainbow.addUniformLoc("uProjectionMatrix");
+			shaders.rainbow.addUniformLoc("time");
+
 			const { gl } = canv;
 			gl?.enable(gl?.BLEND);
 			gl?.blendFunc(gl?.SRC_ALPHA, gl?.ONE_MINUS_SRC_ALPHA);
-			// 
-			
+			//
 
 			window.requestAnimationFrame(update);
 		})
@@ -102,6 +117,8 @@ function init() {
 let prev = 0;
 
 let gameStatePrev = Infinity;
+
+let screenTimer = new Timer(400);
 
 function update(delta: DOMHighResTimeStamp) {
 	const fps = Math.round(1000 / (delta - prev));
@@ -179,6 +196,7 @@ function update(delta: DOMHighResTimeStamp) {
 				break;
 			
 			case GameState.Death:
+				screenTimer.reset();
 				alert("you suck :)");
 				gameObjects.push(
 					new Background(
@@ -189,6 +207,19 @@ function update(delta: DOMHighResTimeStamp) {
 					),
 					new ImageObj({x:0, y:0}, {x:canv.c.width, y:canv.c.height}, "images/Death.png", canv, shaders.basic)
 				)
+				break;
+			
+			case GameState.Win:
+				screenTimer.reset();
+				gameObjects.push(
+					new Rainbow(canv, shaders.rainbow),
+					new ImageObj(
+						{ x: 0, y: 0 },
+						{ x: canv.c.width, y: canv.c.height },
+						"images/Win.png",
+						canv, shaders.basic
+					),
+				);
 				break;
 
 			default:
@@ -208,7 +239,11 @@ function update(delta: DOMHighResTimeStamp) {
 		}
 	}
 
-	if ((curkeys[13] || mouseButton[0]) && gameState == GameState.Death) {
+	if (gameState == GameState.Boss && calcScore() > 1000) {
+		setState(GameState.Win);
+	}
+
+	if ((curkeys[13] || mouseButton[0]) && (gameState == GameState.Death || gameState == GameState.Win) && screenTimer.check()) {
 		if (player != undefined) {
 			player.lives = 10;
 		}
@@ -224,7 +259,15 @@ function update(delta: DOMHighResTimeStamp) {
 	scoreDisplay.innerText = `Score: ${calcScore()}`;
 	diffDisplay.innerText = `Difficulty: ${resetTime/10}`
 	shaders.gradient.bind();
-	canv.gl.uniform1f(shaders.gradient.programInfo.uniformLocations.time, delta/10);
+	canv.gl.uniform1f(
+		shaders.gradient.programInfo.uniformLocations.time,
+		delta / 10,
+	);
+	shaders.rainbow.bind();
+	canv.gl.uniform1f(
+		shaders.rainbow.programInfo.uniformLocations.time,
+		delta / 10,
+	);
 	draw();
 	window.requestAnimationFrame(update);
 }
@@ -262,6 +305,16 @@ function draw() {
 		false,
 		projMat,
 	);
+
+	shaders.rainbow.bind();
+	programInfo = shaders.rainbow?.programInfo;
+	gl?.uniformMatrix4fv(programInfo?.uniformLocations.uViewMatrix, false, viewMat);
+	gl?.uniformMatrix4fv(
+		programInfo?.uniformLocations.uProjectionMatrix,
+		false,
+		projMat,
+	);
+
 	enemyCount = 0;
 	//@ts-ignore
 	gameObjects.draw((obj) => {
@@ -277,7 +330,7 @@ function draw() {
 }
 let enemyCount = 0;
 let counter = 0;
-let resetTime = 0;
+let resetTime = 390;
 
 function generateEnemy() {
 	// scales it so it breaks at 70 and not 30
