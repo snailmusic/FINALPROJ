@@ -7,13 +7,13 @@ export default class Timer {
 		this.dur = time;
 	}
 
-	check(){
-		const curTime = new Date()
+	check() {
+		const curTime = new Date();
 		const relTime = curTime.valueOf() - this.startTime.valueOf();
 		return relTime >= this.dur;
 	}
-	
-	reset(dur?:number){
+
+	reset(dur?: number) {
 		this.startTime = new Date();
 		if (dur != undefined) {
 			this.dur = dur;

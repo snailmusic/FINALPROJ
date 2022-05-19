@@ -11,21 +11,21 @@ export default class Background extends GameObject {
 	shader: Shader;
 	start: Color;
 	end: Color;
-	constructor(start:Color, end:Color, canvas:Canvas, shader:Shader) {
-		super({x:-100000, y:-100000},{x:0, y:0} )
+	constructor(start: Color, end: Color, canvas: Canvas, shader: Shader) {
+		super({ x: -100000, y: -100000 }, { x: 0, y: 0 });
 		this.cullable = false;
 		this.canvas = canvas;
 		this.shader = shader;
 		this.start = start;
 		this.end = end;
 		this.gradient = new GradientRect(
-					{ x: 0, y: 0 },
-					{x:canvas.c.width, y:canvas.c.height},
-					canvas,
-					start,
-					end,
-					shader
-				);
+			{ x: 0, y: 0 },
+			{ x: canvas.c.width, y: canvas.c.height },
+			canvas,
+			start,
+			end,
+			shader,
+		);
 	}
 
 	draw(): void {

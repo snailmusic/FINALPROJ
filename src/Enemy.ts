@@ -5,8 +5,8 @@ import Canvas from "./WebGL/Canvas";
 import Shader from "./WebGL/Shader";
 import { TextureRect } from "./WebGL/Shapes";
 import { Vec2 } from "./WebGL/Types";
-import { audioClips, gameObjects, killEnemy, player, range } from "./Global";
-import { randInt } from "./Helpers";
+import { audioClips, gameObjects, killEnemy, player} from "./Global";
+import { randInt, range } from "./Helpers";
 
 enum PatternType {
 	Spiral,

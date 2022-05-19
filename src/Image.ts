@@ -5,11 +5,14 @@ import Shader from "./WebGL/Shader";
 import { TextureRect } from "./WebGL/Shapes";
 import { Vec2 } from "./WebGL/Types";
 
+// all this does really is just wrap the TextureRect in a 
+// GameObject
 class ImageObj extends GameObject {
 	canvas: Canvas;
 	shader: Shader;
 	texture: TextureRect;
 	constructor(pos: Vec2, size:Vec2, image: string, canvas: Canvas, shader: Shader) {
+		// Disables collision because nothing goes there
 		super({ x: -Infinity, y: -Infinity }, { x: 0, y: 0 });
 		this.canvas = canvas;
 		this.shader = shader;

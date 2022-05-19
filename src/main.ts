@@ -16,7 +16,7 @@ import {
 	gameState,
 	GameState,
 	setState,
-	score
+	score,
 } from "./Global";
 import Player from "./Player";
 // import Background from "./Bg";
@@ -398,7 +398,7 @@ function draw() {
 	// Reset the enemy count
 	enemyCount = 0;
 	gameObjects.draw((obj) => {
-		// modify the enemies 
+		// modify the enemies
 		if (obj.constructor.name == "Enemy") {
 			// move the enemy down
 			obj.pos.y += 0.5;
