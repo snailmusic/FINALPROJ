@@ -16,11 +16,7 @@ import {
 	gameState,
 	GameState,
 	setState,
-<<<<<<< Updated upstream
 	score
-=======
-	score,
->>>>>>> Stashed changes
 } from "./Global";
 import Player from "./Player";
 // import Background from "./Bg";
@@ -239,12 +235,7 @@ function update(delta: DOMHighResTimeStamp) {
 			case GameState.Death:
 				// Reset the timer so you dont immediately click off
 				screenTimer.reset();
-<<<<<<< Updated upstream
-				score.enemies = 0
-				alert("you suck :)");
-=======
 				// Add cyan+pink background, and "ui"
->>>>>>> Stashed changes
 				gameObjects.push(
 					new Background(
 						Colors.cyan,
@@ -265,14 +256,10 @@ function update(delta: DOMHighResTimeStamp) {
 			case GameState.Win:
 				// same as above
 				screenTimer.reset();
-<<<<<<< Updated upstream
-				score.enemies = 0
-=======
 				// reset score
 				score.enemies = 0;
 				// add rainbow background <3
 				// oh and also the "ui"
->>>>>>> Stashed changes
 				gameObjects.push(
 					new Rainbow(canv, shaders.rainbow),
 					new ImageObj(
@@ -427,12 +414,7 @@ function draw() {
 
 // Frame counter to not spawn the enemies too quick
 let counter = 0;
-<<<<<<< Updated upstream
 let resetTime = 0;
-=======
-// Combination difficulty and reset subtraction thing
-let resetTime = 390;
->>>>>>> Stashed changes
 
 function generateEnemy() {
 	// scales it so it breaks at 70 and not 30
