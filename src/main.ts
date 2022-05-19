@@ -15,6 +15,7 @@ import {
 	gameState,
 	GameState,
 	setState,
+	score
 } from "./Global";
 import Player from "./Player";
 // import Background from "./Bg";
@@ -143,7 +144,7 @@ function update(delta: DOMHighResTimeStamp) {
 					new ImageObj(
 						{ x: 0, y: 0 },
 						{ x: canv.c.width, y: canv.c.height },
-						"images/Main Menu.png",
+						"images/Title.png",
 						canv,
 						shaders.basic,
 					),
