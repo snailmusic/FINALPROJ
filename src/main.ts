@@ -288,12 +288,18 @@ function update(delta: DOMHighResTimeStamp) {
 	// Generate enemies if you are ingame
 	if (gameState == GameState.Game) {
 		generateEnemy();
+		if (curkeys[83]) {
+			if(player != undefined){
+				player.cheatMode = !player.cheatMode;
+			}
+		}
 		// If 40 enemies have spawned and none are on screen anymore
 		// go to boss
 		if (resetTime >= 400 && enemyCount == 0) {
 			setState(GameState.Boss);
 		}
 	}
+
 
 	// If you kill the boss (which always gets the score above 1k)
 	// then you win

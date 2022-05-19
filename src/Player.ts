@@ -14,6 +14,7 @@ export default class Player extends GameObject {
 	rect: TextureRect;
 	speed = 5;
 	justPressed = false;
+	cheatMode = false;
 	lives: number;
 	constructor(shader: Shader, canvas: Canvas) {
 		super(mousePos, { x: 8, y: 8 });
@@ -70,6 +71,11 @@ export default class Player extends GameObject {
 		// on release tell the program that you did it
 		if (!(curkeys[32] || mouseButton[0])) {
 			this.justPressed = false;
+		}
+
+		if (this.cheatMode) {
+			this.justPressed = false;
+			this.lives = 10;
 		}
 
 		// collision checking
