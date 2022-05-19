@@ -131,6 +131,10 @@ class Boss extends GameObject {
 					this.sickoMode = true;
 					this.type = PatternType.Spiral;
 					break;
+				
+				case 6:
+					this.lives = 3;
+					this.type = PatternType.Spiral | PatternType.Focused | PatternType.Radial;
 
 				default:
 					this.winPoints();
