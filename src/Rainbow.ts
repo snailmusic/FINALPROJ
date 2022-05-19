@@ -9,10 +9,12 @@ export default class Rainbow extends GameObject {
 	canvas: Canvas;
 	shader: Shader;
 	constructor(canvas:Canvas, shader:Shader) {
+		// DONT LET IT COLLIDE
 		super({x:-100000, y:-100000},{x:0, y:0} )
 		this.cullable = false;
 		this.canvas = canvas;
 		this.shader = shader;
+		// stores the rainbow to be drawn
 		this.gradient = new RainbowRect(
 					{ x: 0, y: 0 },
 					{x:canvas.c.width, y:canvas.c.height},
@@ -21,6 +23,7 @@ export default class Rainbow extends GameObject {
 				);
 	}
 
+	// draw the rainbow
 	draw(): void {
 		const model = mat4.create();
 		const { gl } = this.canvas;

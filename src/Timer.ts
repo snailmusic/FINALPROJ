@@ -1,3 +1,4 @@
+// Basic timer class
 export default class Timer {
 	startTime: Date;
 	dur: number;

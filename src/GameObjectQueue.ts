@@ -2,8 +2,8 @@ import GameObject from "./GameObject";
 import Canvas from "./WebGL/Canvas";
 
 export default class GameObjectQueue {
-	gameObjects1: GameObject[];
-	gameObjects2: GameObject[];
+	private gameObjects1: GameObject[];
+	private gameObjects2: GameObject[];
 	canvas: Canvas;
 	buffer: boolean;
 	constructor(canv: Canvas) {
@@ -28,12 +28,14 @@ export default class GameObjectQueue {
 	}
 	// draws the stuff in the queue
 	draw(customFunc: (obj: GameObject) => void) {
-		const { c } = this.canvas;
+		// const { c } = this.canvas;
 		// code is duplicated
 		if (this.buffer) {
 			// clear gameObjects2
 			this.gameObjects2.length = 0;
 			for (const ob of this.gameObjects1) {
+				// if the object should be kept then do the things
+				// kept as in if its culled or marked for keeping
 				if (this.toKeep(ob)) {
 					ob.draw();
 					customFunc(ob);
@@ -43,16 +45,7 @@ export default class GameObjectQueue {
 		} else {
 			this.gameObjects1.length = 0;
 			for (const ob of this.gameObjects2) {
-				if (
-					(!(
-						ob.pos.x > c.width ||
-						ob.pos.x + ob.size.x < 0 ||
-						ob.pos.y > c.height ||
-						ob.pos.y + ob.size.y < 0
-					) ||
-						!ob.cullable) &&
-					ob.toKeep
-				) {
+				if (this.toKeep(ob)) {
 					ob.draw();
 					customFunc(ob);
 					this.gameObjects1.push(ob);
@@ -64,6 +57,7 @@ export default class GameObjectQueue {
 	}
 
 	push(...args:GameObject[]) {
+		// reimplements the push function for an array lol
 		for (const param of args) {
 			if (this.buffer) {
 				this.gameObjects1.push(param);
@@ -74,6 +68,7 @@ export default class GameObjectQueue {
 	}
 
 	get array() {
+		// returns the currently used array
 		if (this.buffer) {
 			return this.gameObjects1;
 		}

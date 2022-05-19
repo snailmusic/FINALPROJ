@@ -16,7 +16,7 @@ export default class Player extends GameObject {
 	justPressed = false;
 	lives: number;
 	constructor(shader: Shader, canvas: Canvas) {
-		super(mousePos, { x: 8, y: 8   });
+		super(mousePos, { x: 8, y: 8});
 		this.shader = shader;
 		this.canvas = canvas;
 		this.rect = new TextureRect(
