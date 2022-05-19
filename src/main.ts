@@ -196,6 +196,7 @@ function update(delta: DOMHighResTimeStamp) {
 			
 			case GameState.Death:
 				screenTimer.reset();
+				score.enemies = 0
 				alert("you suck :)");
 				gameObjects.push(
 					new Background(
@@ -210,6 +211,7 @@ function update(delta: DOMHighResTimeStamp) {
 			
 			case GameState.Win:
 				screenTimer.reset();
+				score.enemies = 0
 				gameObjects.push(
 					new Rainbow(canv, shaders.rainbow),
 					new ImageObj(
@@ -329,7 +331,7 @@ function draw() {
 }
 let enemyCount = 0;
 let counter = 0;
-let resetTime = 390;
+let resetTime = 0;
 
 function generateEnemy() {
 	// scales it so it breaks at 70 and not 30
