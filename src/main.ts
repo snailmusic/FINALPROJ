@@ -293,6 +293,9 @@ function update(delta: DOMHighResTimeStamp) {
 				player.cheatMode = !player.cheatMode;
 			}
 		}
+		if (curkeys[66]) {
+			setState(GameState.Boss);
+		}
 		// If 40 enemies have spawned and none are on screen anymore
 		// go to boss
 		if (resetTime >= 400 && enemyCount == 0) {
