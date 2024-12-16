@@ -8,6 +8,7 @@ void main() {
 }
 
 >>FRAG<<
+precision mediump float;
 uniform mediump vec4 uColor;
 
 void main() {
